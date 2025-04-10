@@ -12,6 +12,7 @@
       margin: 0;
       padding: 0;
     }
+
     .container, .container-bottom {
       background-color: rgba(0, 0, 0, 0.6);
       border-radius: 30px;
@@ -20,12 +21,14 @@
       margin: 30px auto;
       box-shadow: 0 0 40px rgba(255,140,0,0.3);
     }
+
     .line {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin: 20px 0;
     }
+
     .title {
       font-size: 22px;
       line-height: 1.2;
@@ -36,6 +39,7 @@
       -webkit-text-fill-color: transparent;
       opacity: 0.9;
     }
+
     .value {
       font-size: 36px;
       font-weight: bold;
@@ -47,14 +51,17 @@
       min-width: 140px;
       transition: transform 0.3s ease, color 0.3s ease;
     }
+
     .value.updated {
       transform: scale(1.2);
       color: orange;
     }
+
     .divider {
       border-top: 3px solid #ff9900;
       margin: 20px 0;
     }
+
     .note {
       font-size: 22px;
       font-weight: bold;
@@ -63,31 +70,36 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
+    /* Стилі для таймера в стилі Рембо */
     .countdown-wrapper {
-      position: relative;
       width: fit-content;
       margin: 10px auto 30px auto;
-      border-radius: 30px;
-      overflow: hidden;
-      padding: 4px;
     }
-    .countdown-wrapper::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to right, orange, red);
-      z-index: -1;
-      border-radius: 30px;
-    }
-    .countdown-box {
-      background-color: rgba(0, 0, 0, 0.6); /* чорний напівпрозорий */
-      font-family: 'Arial Black', sans-serif;
+
+    .countdown-box-rembo {
+      background-color: rgba(0, 0, 0, 0.6);
       color: white;
-      font-size: 26px;
+      font-family: 'Arial Black', sans-serif;
+      border: 2px solid orange;
+      border-radius: 20px;
       padding: 20px 30px;
-      border-radius: 26px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+      display: inline-block;
+      min-width: 360px;
+    }
+
+    .rembo-title {
+      font-size: 20px;
+      color: #ffff66;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .rembo-time {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
     }
   </style>
 </head>
@@ -121,9 +133,9 @@
   </div>
 
   <div class="countdown-wrapper">
-    <div class="countdown-box">
-      <div style="font-size: 22px; margin-bottom: 6px;">До кінця челенджу:</div>
-      <div id="countdown" style="font-size: 32px;">...</div>
+    <div class="countdown-box-rembo">
+      <div class="rembo-title">До кінця челенджу:</div>
+      <div id="countdown" class="rembo-time">...</div>
     </div>
   </div>
 
