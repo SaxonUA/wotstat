@@ -61,6 +61,30 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+    .countdown-wrapper {
+      position: relative;
+      width: fit-content;
+      margin: 10px auto 30px auto;
+      border-radius: 30px;
+      overflow: hidden;
+      padding: 4px;
+    }
+    .countdown-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, orange, red);
+      z-index: -1;
+      border-radius: 30px;
+    }
+    .countdown-box {
+      background-color: rgba(0, 0, 0, 0.6);
+      font-family: 'Arial Black', sans-serif;
+      color: white;
+      font-size: 26px;
+      padding: 20px 30px;
+      border-radius: 26px;
+    }
   </style>
 </head>
 <body>
@@ -79,6 +103,23 @@
     <div class="divider"></div>
     <div class="note">Кожна 1 грн додає <span style="color: orange">50 урону</span></div>
     <div class="note">Кожен 1 лайк додає <span style="color: orange">500 урону</span></div>
+  </div>
+
+  <div class="container-bottom" style="background: linear-gradient(to right, #330000, #111); border: 2px solid red; box-shadow: 0 0 30px rgba(255,0,0,0.5); font-family: 'Arial Black', sans-serif; text-align: center; margin: 30px auto; display: inline-block;">
+    <div class="line">
+      <div class="title" style="color: red; font-size: 28px; text-shadow: 0 0 10px red;">💥 РЕМБО ЧЕЛЕНДЖ 💥</div>
+    </div>
+    <div class="divider" style="border-top: 2px dashed red;"></div>
+    <div class="line"><div class="title" style="color: orange; text-align: left;">ЗАЛИШИЛОСЬ<br>НАСТРІЛЯТИ:</div><div class="value" id="left2" style="font-size: 36px; background: repeating-linear-gradient(45deg, rgba(255,0,0,0.3) 0px, rgba(255,0,0,0.3) 8px, transparent 8px, transparent 16px); border: 2px solid red;">...</div></div>
+    <div class="divider" style="border-top: 2px dashed red;"></div>
+    <div class="note" style="color: orange;">+50 урону за 1 грн</div>
+    <div class="note" style="color: orange;">+500 урону за 1 лайк</div>
+  </div>
+
+  <div class="countdown-wrapper">
+    <div class="countdown-box">
+      <div id="countdown">До кінця челенджу: ...</div>
+    </div>
   </div>
 
   <script>
@@ -111,55 +152,37 @@
         document.getElementById("done").innerText = Number(done).toLocaleString();
         document.getElementById("left").innerText = Number(left).toLocaleString();
         document.getElementById("left2").innerText = Number(left).toLocaleString();
+
       } catch (err) {
         console.error("Помилка оновлення даних:", err);
-        document.getElementById("start").innerText = "Помилка";
-        document.getElementById("donations").innerText = "Помилка";
-        document.getElementById("likes").innerText = "Помилка";
-        document.getElementById("total").innerText = "Помилка";
-        document.getElementById("done").innerText = "Помилка";
-        document.getElementById("left").innerText = "Помилка";
+        ["start", "donations", "likes", "total", "done", "left", "left2"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.innerText = "Помилка";
+        });
       }
     }
 
-    updateUI();
-    setInterval(updateUI, 15000);
-  </script>
-
-  <div class="container-bottom" style="background: linear-gradient(to right, #330000, #111); border: 2px solid red; box-shadow: 0 0 30px rgba(255,0,0,0.5); font-family: 'Arial Black', sans-serif; text-align: center; margin: 30px auto; display: inline-block;">
-    <div class="line">
-      <div class="title" style="color: red; font-size: 28px; text-shadow: 0 0 10px red;">💥 РЕМБО ЧЕЛЕНДЖ 💥</div>
-    </div>
-    <div class="divider" style="border-top: 2px dashed red;"></div>
-    <div class="line"><div class="title" style="color: orange; text-align: left;">ЗАЛИШИЛОСЬ<br>НАСТРІЛЯТИ:</div><div class="value" id="left2" style="font-size: 36px; background: repeating-linear-gradient(45deg, rgba(255,0,0,0.3) 0px, rgba(255,0,0,0.3) 8px, transparent 8px, transparent 16px); border: 2px solid red;">...</div></div>
-    <div class="divider" style="border-top: 2px dashed red;"></div>
-    <div class="note" style="color: orange;">+50 урону за 1 грн</div>
-    <div class="note" style="color: orange;">+500 урону за 1 лайк</div>
-  </div>
-
-  <script>
     function updateCountdown() {
       const now = new Date();
       const target = new Date();
-      target.setHours(24, 0, 0, 0);
-      target.setDate(target.getDate());
-
+      target.setHours(23, 59, 59, 999);
       const diff = target - now;
+      const countdown = document.getElementById("countdown");
+      if (!countdown) return;
       if (diff <= 0) {
-        document.getElementById("countdown").innerText = "Час вийшов!";
+        countdown.innerText = "Час вийшов!";
       } else {
         const hrs = String(Math.floor(diff / 3600000)).padStart(2, '0');
         const mins = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
         const secs = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-        document.getElementById("countdown").innerText = `До кінця челенджу: ${hrs}г ${mins}хв ${secs}сек`;
+        countdown.innerText = `До кінця челенджу: ${hrs}г ${mins}хв ${secs}сек`;
       }
     }
+
+    updateUI();
     updateCountdown();
+    setInterval(updateUI, 15000);
     setInterval(updateCountdown, 1000);
   </script>
-
-  <div class="container-bottom" style="background-color: rgba(0, 0, 0, 0.6); font-family: 'Arial Black', sans-serif; color: white; font-size: 26px; padding: 20px 30px; width: fit-content; margin: 10px auto 30px auto; border-radius: 20px; box-shadow: 0 0 25px rgba(255, 140, 0, 0.3); border: 3px solid; border-image: linear-gradient(to right, orange, red) 1;">
-    <div id="countdown">До кінця челенджу: ...</div>
-  </div>
 </body>
 </html>
