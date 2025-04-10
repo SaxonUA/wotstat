@@ -13,50 +13,51 @@
       padding: 0;
     }
     .container {
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 20px;
-      padding: 20px 40px;
+      background: linear-gradient(to bottom right, #3a3a3a, #1f1f1f);
+      border-radius: 30px;
+      padding: 25px 50px;
       width: fit-content;
-      margin: 20px auto;
-      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+      margin: 30px auto;
+      box-shadow: 0 0 40px rgba(255,140,0,0.3);
     }
     .line {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin: 15px 0;
+      margin: 20px 0;
     }
     .text-block {
       text-align: left;
-      min-width: 170px;
+      min-width: 200px;
     }
     .title {
-      font-size: 18px;
+      font-size: 22px;
       line-height: 1.2;
       font-weight: bold;
       text-transform: uppercase;
-      background: linear-gradient(to right, orange, #ffcc00);
+      background: linear-gradient(to right, #ffcc00, orange);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      opacity: 0.7;
+      opacity: 0.9;
     }
     .value {
-      font-size: 30px;
+      font-size: 36px;
       font-weight: bold;
-      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.25), rgba(255,255,255,0.25) 10px, transparent 10px, transparent 20px);
-      padding: 5px 15px;
-      border-radius: 5px;
-      color: white;
+      color: #fff;
+      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.2) 10px, transparent 10px, transparent 20px);
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
     }
     .divider {
-      border-top: 3px solid orange;
-      margin: 10px 0;
+      border-top: 3px solid #ff9900;
+      margin: 20px 0;
     }
     .note {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
-      margin-top: 10px;
-      background: linear-gradient(to right, white, orange);
+      margin-top: 20px;
+      background: linear-gradient(to right, #ffffff, orange);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -76,34 +77,48 @@
 
     <div class="divider"></div>
 
-    <div class="note">Кожна 1 грн додає 50 урону</div>
-    <div class="note">Кожен 1 лайк додає 500 урону</div>
+    <div class="note">Кожна 1 грн додає <span style="color: orange">50 урону</span></div>
+    <div class="note">Кожен 1 лайк додає <span style="color: orange">500 урону</span></div>
   </div>
 
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const GID = "1630188258"; // GID аркуша "WOT"
+    const GID = "1630188258";
 
-    async function fetchData() {
-      const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${GID}`;
-      const res = await fetch(URL);
+    async function fetchSingleCell(range) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&range=${range}&tqx=out:json`;
+      const res = await fetch(url);
       const text = await res.text();
       const json = JSON.parse(text.substring(47).slice(0, -2));
-      return json.table.rows;
+      return json.table.rows[0].c[0].v;
     }
 
     async function updateUI() {
       try {
-        const rows = await fetchData();
+        const [start, donations, likes, total, done, left] = await Promise.all([
+          fetchSingleCell("C7"),
+          fetchSingleCell("C8"),
+          fetchSingleCell("C9"),
+          fetchSingleCell("C10"),
+          fetchSingleCell("C12"),
+          fetchSingleCell("C14")
+        ]);
 
-        document.getElementById("start").innerText = rows[6]?.c[2]?.v?.toLocaleString() || "0";     // C7
-        document.getElementById("donations").innerText = rows[7]?.c[2]?.v?.toLocaleString() || "0"; // C8
-        document.getElementById("likes").innerText = rows[8]?.c[2]?.v?.toLocaleString() || "0";     // C9
-        document.getElementById("total").innerText = rows[9]?.c[2]?.v?.toLocaleString() || "0";     // C10
-        document.getElementById("done").innerText = rows[11]?.c[2]?.v?.toLocaleString() || "0";     // C12
-        document.getElementById("left").innerText = rows[13]?.c[2]?.v?.toLocaleString() || "0";     // C14
+        document.getElementById("start").innerText = Number(start).toLocaleString();
+        document.getElementById("donations").innerText = Number(donations).toLocaleString();
+        document.getElementById("likes").innerText = Number(likes).toLocaleString();
+        document.getElementById("total").innerText = Number(total).toLocaleString();
+        document.getElementById("done").innerText = Number(done).toLocaleString();
+        document.getElementById("left").innerText = Number(left).toLocaleString();
+
       } catch (err) {
-        console.error(err);
+        console.error("Помилка оновлення даних:", err);
+        document.getElementById("start").innerText = "Помилка";
+        document.getElementById("donations").innerText = "Помилка";
+        document.getElementById("likes").innerText = "Помилка";
+        document.getElementById("total").innerText = "Помилка";
+        document.getElementById("done").innerText = "Помилка";
+        document.getElementById("left").innerText = "Помилка";
       }
     }
 
