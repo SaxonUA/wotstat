@@ -1,48 +1,55 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Like Damage Tracker</title>
+  <meta charset="UTF-8">
+  <title>Лайки + Дамаг</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #111;
+      font-family: 'Segoe UI', sans-serif;
+      background: transparent;
       color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
     }
-    .box {
-      background: #222;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-      text-align: center;
+    .container {
+      padding: 20px;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      width: fit-content;
     }
     .title {
-      font-size: 24px;
-      margin-bottom: 10px;
-      color: #aaa;
+      font-size: 18px;
+      color: #ccc;
     }
-    .number {
-      font-size: 60px;
+    .stat {
+      font-size: 36px;
       font-weight: bold;
-      color: #4caf50;
-      text-shadow: 0 0 10px #4caf50;
+      margin: 5px 0;
     }
+    .yt { color: #ff0000; }
+    .tt { color: #ff2fb1; }
+    .total { color: #00ffff; }
+    .dmg { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <div class="title">Цільовий дамаг за лайки</div>
-    <div class="number" id="damage">...</div>
+  <div class="container">
+    <div class="title">YouTube 👍</div>
+    <div class="stat yt" id="yt">0</div>
+
+    <div class="title">TikTok ❤️</div>
+    <div class="stat tt" id="tt">0</div>
+
+    <div class="title">Усього лайків</div>
+    <div class="stat total" id="total">0</div>
+
+    <div class="title">Цільовий дамаг</div>
+    <div class="stat dmg" id="dmg">0</div>
   </div>
 
   <script>
-    async function fetchData() {
+    async function fetchStats() {
       const sheetID = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
       const sheetName = 'like';
       const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
@@ -51,19 +58,24 @@
         const res = await fetch(url);
         const text = await res.text();
         const json = JSON.parse(text.substring(47).slice(0, -2));
-
-        // Перша клітинка: A2 = лайки, B2 = дамаг
         const rows = json.table.rows;
-        const damage = rows[0].c[1].v;
 
-        document.getElementById("damage").textContent = damage;
-      } catch (err) {
-        console.error("Помилка отримання даних:", err);
+        const yt = rows[0]?.c[0]?.v || 0;
+        const tt = rows[0]?.c[2]?.v || 0;
+        const total = rows[0]?.c[3]?.v || 0;
+        const dmg = rows[0]?.c[4]?.v || 0;
+
+        document.getElementById("yt").textContent = yt;
+        document.getElementById("tt").textContent = tt;
+        document.getElementById("total").textContent = total;
+        document.getElementById("dmg").textContent = dmg;
+      } catch (e) {
+        console.error("Помилка зчитування Google Таблиці:", e);
       }
     }
 
-    fetchData();
-    setInterval(fetchData, 15000);
+    fetchStats();
+    setInterval(fetchStats, 15000);
   </script>
 </body>
 </html>
