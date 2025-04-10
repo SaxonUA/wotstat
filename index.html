@@ -1,81 +1,115 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Лайки + Дамаг</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>WOT донати та лайки</title>
   <style>
     body {
+      background-color: transparent;
+      font-family: 'Arial Black', sans-serif;
+      color: white;
+      text-align: center;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: transparent;
-      color: #fff;
+      padding: 0;
     }
     .container {
-      padding: 20px;
-      border-radius: 16px;
-      background: rgba(0, 0, 0, 0.6);
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
+      padding: 20px 40px;
       width: fit-content;
+      margin: 20px auto;
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    }
+    .line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 15px 0;
+    }
+    .text-block {
+      text-align: left;
+      min-width: 170px;
     }
     .title {
       font-size: 18px;
-      color: #ccc;
-    }
-    .stat {
-      font-size: 36px;
+      line-height: 1.2;
       font-weight: bold;
-      margin: 5px 0;
+      text-transform: uppercase;
+      background: linear-gradient(to right, orange, #ffcc00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0.7;
     }
-    .yt { color: #ff0000; }
-    .tt { color: #ff2fb1; }
-    .total { color: #00ffff; }
-    .dmg { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
+    .value {
+      font-size: 30px;
+      font-weight: bold;
+      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.25), rgba(255,255,255,0.25) 10px, transparent 10px, transparent 20px);
+      padding: 5px 15px;
+      border-radius: 5px;
+      color: white;
+    }
+    .divider {
+      border-top: 3px solid orange;
+      margin: 10px 0;
+    }
+    .note {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+      background: linear-gradient(to right, white, orange);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="title">YouTube 👍</div>
-    <div class="stat yt" id="yt">0</div>
+    <div class="line"><div class="title">Початково</div><div class="value" id="start">...</div></div>
+    <div class="line"><div class="title">За донати</div><div class="value" id="donations">...</div></div>
+    <div class="line"><div class="title">За лайки</div><div class="value" id="likes">...</div></div>
+    <div class="line"><div class="title">Всього за стрім</div><div class="value" id="total">...</div></div>
 
-    <div class="title">TikTok ❤️</div>
-    <div class="stat tt" id="tt">0</div>
+    <div class="divider"></div>
 
-    <div class="title">Усього лайків</div>
-    <div class="stat total" id="total">0</div>
+    <div class="line"><div class="title">Вже настріляв</div><div class="value" id="done">...</div></div>
+    <div class="line"><div class="title">Залишилось виконати</div><div class="value" id="left">...</div></div>
 
-    <div class="title">Цільовий дамаг</div>
-    <div class="stat dmg" id="dmg">0</div>
+    <div class="divider"></div>
+
+    <div class="note">Кожна 1 грн додає 50 урону</div>
+    <div class="note">Кожен 1 лайк додає 500 урону</div>
   </div>
 
   <script>
-    async function fetchStats() {
-      const sheetID = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
-      const sheetName = 'like';
-      const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
+    const GID = "1630188258";
 
+    async function fetchData() {
+      const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${GID}`;
+      const res = await fetch(URL);
+      const text = await res.text();
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+      return json.table.rows;
+    }
+
+    async function updateUI() {
       try {
-        const res = await fetch(url);
-        const text = await res.text();
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        const rows = json.table.rows;
+        const rows = await fetchData();
 
-        const yt = rows[0]?.c[0]?.v || 0;
-        const tt = rows[0]?.c[2]?.v || 0;
-        const total = rows[0]?.c[3]?.v || 0;
-        const dmg = rows[0]?.c[4]?.v || 0;
+        document.getElementById("start").innerText = rows[7]?.c[2]?.v?.toLocaleString() || "0";
+        document.getElementById("donations").innerText = rows[8]?.c[2]?.v?.toLocaleString() || "0";
+        document.getElementById("likes").innerText = rows[9]?.c[2]?.v?.toLocaleString() || "0";
+        document.getElementById("total").innerText = rows[10]?.c[2]?.v?.toLocaleString() || "0";
 
-        document.getElementById("yt").textContent = yt;
-        document.getElementById("tt").textContent = tt;
-        document.getElementById("total").textContent = total;
-        document.getElementById("dmg").textContent = dmg;
-      } catch (e) {
-        console.error("Помилка зчитування Google Таблиці:", e);
+        document.getElementById("done").innerText = rows[12]?.c[2]?.v?.toLocaleString() || "0";
+        document.getElementById("left").innerText = rows[13]?.c[2]?.v?.toLocaleString() || "0";
+      } catch (err) {
+        console.error(err);
       }
     }
 
-    fetchStats();
-    setInterval(fetchStats, 15000);
+    updateUI();
+    setInterval(updateUI, 15000);
   </script>
 </body>
 </html>
