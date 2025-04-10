@@ -26,10 +26,6 @@
       justify-content: space-between;
       margin: 20px 0;
     }
-    .text-block {
-      text-align: left;
-      min-width: 200px;
-    }
     .title {
       font-size: 22px;
       line-height: 1.2;
@@ -48,6 +44,12 @@
       padding: 10px 20px;
       border-radius: 10px;
       box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+      min-width: 140px;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+    .value.updated {
+      transform: scale(1.2);
+      color: orange;
     }
     .divider {
       border-top: 3px solid #ff9900;
@@ -78,12 +80,14 @@
       border-radius: 30px;
     }
     .countdown-box {
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(0, 0, 0, 0.6); /* чорний напівпрозорий */
       font-family: 'Arial Black', sans-serif;
       color: white;
       font-size: 26px;
       padding: 20px 30px;
       border-radius: 26px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
@@ -105,7 +109,7 @@
     <div class="note">Кожен 1 лайк додає <span style="color: orange">500 урону</span></div>
   </div>
 
-  <div class="container-bottom" style=" rgba(0, 0, 0, 0.6); border: 2px solid red; box-shadow: 0 0 30px rgba(255,0,0,0.5); font-family: 'Arial Black', sans-serif; text-align: center; margin: 30px auto; display: inline-block;">
+  <div class="container-bottom" style="rgba(0, 0, 0, 0.6); border: 2px solid red; box-shadow: 0 0 30px rgba(255,0,0,0.5); font-family: 'Arial Black', sans-serif; text-align: center; margin: 30px auto; display: inline-block;">
     <div class="line">
       <div class="title" style="color: white; font-size: 28px; background: none; -webkit-text-fill-color: white;">💥 РЕМБО ЧЕЛЕНДЖ 💥</div>
     </div>
@@ -118,7 +122,8 @@
 
   <div class="countdown-wrapper">
     <div class="countdown-box">
-      <div id="countdown">До кінця челенджу: ...</div>
+      <div style="font-size: 22px; margin-bottom: 6px;">До кінця челенджу:</div>
+      <div id="countdown" style="font-size: 32px;">...</div>
     </div>
   </div>
 
@@ -131,7 +136,23 @@
       const res = await fetch(url);
       const text = await res.text();
       const json = JSON.parse(text.substring(47).slice(0, -2));
-      return json.table.rows[0].c[0].v;
+      return json.table.rows[0].c[0]?.v || 0;
+    }
+
+    function animateValue(id, newValue) {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const oldValue = parseInt(el.innerText.replace(/\D/g, "")) || 0;
+      const valueChanged = newValue !== oldValue;
+
+      if (valueChanged) {
+        el.classList.add("updated");
+        el.innerText = Number(newValue).toLocaleString();
+        setTimeout(() => el.classList.remove("updated"), 500);
+      } else {
+        el.innerText = Number(newValue).toLocaleString();
+      }
     }
 
     async function updateUI() {
@@ -145,13 +166,13 @@
           fetchSingleCell("C14")
         ]);
 
-        document.getElementById("start").innerText = Number(start).toLocaleString();
-        document.getElementById("donations").innerText = Number(donations).toLocaleString();
-        document.getElementById("likes").innerText = Number(likes).toLocaleString();
-        document.getElementById("total").innerText = Number(total).toLocaleString();
-        document.getElementById("done").innerText = Number(done).toLocaleString();
-        document.getElementById("left").innerText = Number(left).toLocaleString();
-        document.getElementById("left2").innerText = Number(left).toLocaleString();
+        animateValue("start", start);
+        animateValue("donations", donations);
+        animateValue("likes", likes);
+        animateValue("total", total);
+        animateValue("done", done);
+        animateValue("left", left);
+        animateValue("left2", left);
 
       } catch (err) {
         console.error("Помилка оновлення даних:", err);
@@ -175,7 +196,7 @@
         const hrs = String(Math.floor(diff / 3600000)).padStart(2, '0');
         const mins = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
         const secs = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-        countdown.innerText = `До кінця челенджу: ${hrs}г ${mins}хв ${secs}сек`;
+        countdown.innerText = `${hrs}г ${mins}хв ${secs}сек`;
       }
     }
 
