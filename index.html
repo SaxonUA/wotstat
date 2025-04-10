@@ -82,7 +82,7 @@
 
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const GID = "1834629230"; // GID сторінки WOT
+    const GID = "1630188258"; // GID аркуша "WOT"
 
     async function fetchData() {
       const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${GID}`;
@@ -96,13 +96,12 @@
       try {
         const rows = await fetchData();
 
-        document.getElementById("start").innerText = rows[7]?.c[2]?.v?.toLocaleString() || "0";
-        document.getElementById("donations").innerText = rows[8]?.c[2]?.v?.toLocaleString() || "0";
-        document.getElementById("likes").innerText = rows[9]?.c[2]?.v?.toLocaleString() || "0";
-        document.getElementById("total").innerText = rows[10]?.c[2]?.v?.toLocaleString() || "0";
-
-        document.getElementById("done").innerText = rows[12]?.c[2]?.v?.toLocaleString() || "0";
-        document.getElementById("left").innerText = rows[13]?.c[2]?.v?.toLocaleString() || "0";
+        document.getElementById("start").innerText = rows[6]?.c[2]?.v?.toLocaleString() || "0";     // C7
+        document.getElementById("donations").innerText = rows[7]?.c[2]?.v?.toLocaleString() || "0"; // C8
+        document.getElementById("likes").innerText = rows[8]?.c[2]?.v?.toLocaleString() || "0";     // C9
+        document.getElementById("total").innerText = rows[9]?.c[2]?.v?.toLocaleString() || "0";     // C10
+        document.getElementById("done").innerText = rows[11]?.c[2]?.v?.toLocaleString() || "0";     // C12
+        document.getElementById("left").innerText = rows[13]?.c[2]?.v?.toLocaleString() || "0";     // C14
       } catch (err) {
         console.error(err);
       }
