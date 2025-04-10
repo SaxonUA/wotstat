@@ -1,10 +1,69 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Моя тестова сторінка</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Like Damage Tracker</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .box {
+      background: #222;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+    .title {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #aaa;
+    }
+    .number {
+      font-size: 60px;
+      font-weight: bold;
+      color: #4caf50;
+      text-shadow: 0 0 10px #4caf50;
+    }
+  </style>
 </head>
 <body>
-  <h1>Привіт, GitHub Pages!</h1>
+  <div class="box">
+    <div class="title">Цільовий дамаг за лайки</div>
+    <div class="number" id="damage">...</div>
+  </div>
+
+  <script>
+    async function fetchData() {
+      const sheetID = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
+      const sheetName = 'like';
+      const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+
+        // Перша клітинка: A2 = лайки, B2 = дамаг
+        const rows = json.table.rows;
+        const damage = rows[0].c[1].v;
+
+        document.getElementById("damage").textContent = damage;
+      } catch (err) {
+        console.error("Помилка отримання даних:", err);
+      }
+    }
+
+    fetchData();
+    setInterval(fetchData, 15000);
+  </script>
 </body>
 </html>
