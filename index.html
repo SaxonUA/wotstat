@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
-  <title>WOT донати та лайки</title>
+  <title>Рембо Челендж</title>
   <style>
     body {
       background-color: transparent;
@@ -13,13 +13,25 @@
       padding: 0;
     }
 
-    .container, .container-bottom {
+    .container-rembo {
       background-color: rgba(0, 0, 0, 0.6);
+      border: 2px solid white;
       border-radius: 30px;
+      box-shadow: 0 0 30px rgba(255,0,0,0.5);
       padding: 25px 50px;
       width: fit-content;
       margin: 30px auto;
-      box-shadow: 0 0 40px rgba(255,140,0,0.3);
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .divider {
+      border-top: 2px dashed red;
+      margin: 20px 0;
     }
 
     .line {
@@ -29,49 +41,29 @@
       margin: 20px 0;
     }
 
-    .title {
+    .label {
       font-size: 22px;
-      line-height: 1.2;
-      font-weight: bold;
-      text-transform: uppercase;
-      background: linear-gradient(to right, #ffcc00, orange);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      opacity: 0.9;
+      color: orange;
+      text-align: left;
     }
 
     .value {
       font-size: 36px;
       font-weight: bold;
-      color: #fff;
-      background: repeating-linear-gradient(135deg, rgba(255,255,255,0.2) 0px, rgba(255,255,255,0.2) 8px, transparent 8px, transparent 16px);
-      padding: 10px 20px;
+      background: repeating-linear-gradient(-45deg, rgba(255,0,0,0.3) 0px, rgba(255,0,0,0.3) 8px, transparent 8px, transparent 16px);
+      border: 2px solid red;
       border-radius: 10px;
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+      padding: 10px 20px;
       min-width: 140px;
-      transition: transform 0.3s ease, color 0.3s ease;
-    }
-
-    .value.updated {
-      transform: scale(1.2);
-      color: Orange;
-    }
-
-    .divider {
-      border-top: 2px solid #ff9900;
-      margin: 20px 0;
     }
 
     .note {
-      font-size: 22px;
+      font-size: 18px;
       font-weight: bold;
-      margin-top: 20px;
-      background: linear-gradient(to right, #ffffff, DarkOrange);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: orange;
+      margin: 5px 0;
     }
 
-    /* Стилі для таймера в стилі Рембо */
     .countdown-wrapper {
       width: fit-content;
       margin: 10px auto 30px auto;
@@ -80,7 +72,6 @@
     .countdown-box-rembo {
       background-color: rgba(0, 0, 0, 0.6);
       color: white;
-      font-family: 'Arial Black', sans-serif;
       border: 2px solid orange;
       border-radius: 20px;
       padding: 20px 30px;
@@ -104,32 +95,16 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="line"><div class="title">Початково</div><div class="value" id="start">...</div></div>
+  <div class="container-rembo">
+    <div class="title">💥 РЕМБО ЧЕЛЕНДЖ 💥</div>
     <div class="divider"></div>
-    <div class="line"><div class="title">За донати</div><div class="value" id="donations">...</div></div>
-    <div class="line"><div class="title">За лайки</div><div class="value" id="likes">...</div></div>
-    <div class="divider"></div>
-    <div class="line"><div class="title">Всього<br>за стрім</div><div class="value" id="total">...</div></div>
-    <div class="line"><div class="title">Вже<br>настріляв</div><div class="value" id="done">...</div></div>
-  </div>
-
-  <div class="container-bottom">
-    <div class="line"><div class="title">Залишилось<br>виконати</div><div class="value" id="left">...</div></div>
-    <div class="divider"></div>
-    <div class="note">Кожна 1 грн додає <span style="color: orange">50 урону</span></div>
-    <div class="note">Кожен 1 лайк додає <span style="color: orange">500 урону</span></div>
-  </div>
-
-  <div class="container-bottom" style="rgba(0, 0, 0, 0.6); border: 2px solid white; box-shadow: 0 0 30px rgba(255,0,0,0.5); font-family: 'Arial Black', sans-serif; text-align: center; margin: 30px auto; display: inline-block;">
     <div class="line">
-      <div class="title" style="color: white; font-size: 28px; background: none; -webkit-text-fill-color: white;">💥 РЕМБО ЧЕЛЕНДЖ 💥</div>
+      <div class="label">ЗАЛИШИЛОСЬ<br>НАСТРІЛЯТИ:</div>
+      <div class="value" id="left2">...</div>
     </div>
-    <div class="divider" style="border-top: 2px dashed red;"></div>
-    <div class="line"><div class="title" style="color: orange; text-align: left;">ЗАЛИШИЛОСЬ<br>НАСТРІЛЯТИ:</div><div class="value" id="left2" style="font-size: 36px; background: repeating-linear-gradient(-45deg, rgba(255,0,0,0.3) 0px, rgba(255,0,0,0.3) 8px, transparent 8px, transparent 16px); border: 2px solid red;">...</div></div>
-    <div class="divider" style="border-top: 2px dashed red;"></div>
-    <div class="note" style="color: orange;">+50 урону за 1 грн</div>
-    <div class="note" style="color: orange;">+500 урону за 1 лайк</div>
+    <div class="divider"></div>
+    <div class="note">+50 урону за 1 грн</div>
+    <div class="note">+200 урону за 1 лайк</div>
   </div>
 
   <div class="countdown-wrapper">
@@ -169,29 +144,12 @@
 
     async function updateUI() {
       try {
-        const [start, donations, likes, total, done, left] = await Promise.all([
-          fetchSingleCell("C7"),
-          fetchSingleCell("C8"),
-          fetchSingleCell("C9"),
-          fetchSingleCell("C10"),
-          fetchSingleCell("C12"),
-          fetchSingleCell("C14")
-        ]);
-
-        animateValue("start", start);
-        animateValue("donations", donations);
-        animateValue("likes", likes);
-        animateValue("total", total);
-        animateValue("done", done);
-        animateValue("left", left);
+        const left = await fetchSingleCell("C14");
         animateValue("left2", left);
-
       } catch (err) {
         console.error("Помилка оновлення даних:", err);
-        ["start", "donations", "likes", "total", "done", "left", "left2"].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.innerText = "Помилка";
-        });
+        const el = document.getElementById("left2");
+        if (el) el.innerText = "Помилка";
       }
     }
 
