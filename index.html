@@ -5,22 +5,27 @@
   <title>Рембо Челендж</title>
   <style>
     body {
-      background-color: transparent;
+      background: url('РЕМБО САКСОН (1).png') no-repeat center center;
+      background-size: cover;
       font-family: 'Arial Black', sans-serif;
       color: white;
       text-align: center;
       margin: 0;
       padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    .container-rembo {
+    .overlay {
       background-color: rgba(0, 0, 0, 0.6);
       border: 2px solid white;
       border-radius: 30px;
       box-shadow: 0 0 30px rgba(255,0,0,0.5);
       padding: 25px 50px;
       width: fit-content;
-      margin: 30px auto;
+      margin: 0 auto;
     }
 
     .title {
@@ -60,13 +65,25 @@
     .note {
       font-size: 18px;
       font-weight: bold;
-      color: orange;
       margin: 5px 0;
     }
 
+    .note-gradient {
+      background: linear-gradient(270deg, orange, yellow, orange);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 3s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     .countdown-wrapper {
-      width: fit-content;
-      margin: 10px auto 30px auto;
+      margin-top: 20px;
     }
 
     .countdown-box-rembo {
@@ -95,7 +112,7 @@
   </style>
 </head>
 <body>
-  <div class="container-rembo">
+  <div class="overlay">
     <div class="title">💥 РЕМБО ЧЕЛЕНДЖ 💥</div>
     <div class="divider"></div>
     <div class="line">
@@ -103,14 +120,14 @@
       <div class="value" id="left2">...</div>
     </div>
     <div class="divider"></div>
-    <div class="note">+50 урону за 1 грн</div>
-    <div class="note">+200 урону за 1 лайк</div>
-  </div>
-
-  <div class="countdown-wrapper">
-    <div class="countdown-box-rembo">
-      <div class="rembo-title">До кінця челенджу:</div>
-      <div id="countdown" class="rembo-time">...</div>
+    <div class="note note-gradient">+50 урону за 1 грн</div>
+    <div class="note note-gradient">+1 урон за 1 тап в TikTok</div>
+    <div class="note note-gradient">+200 урону за 1 лайк YouTube</div>
+    <div class="countdown-wrapper">
+      <div class="countdown-box-rembo">
+        <div class="rembo-title">До кінця челенджу:</div>
+        <div id="countdown" class="rembo-time">...</div>
+      </div>
     </div>
   </div>
 
