@@ -60,6 +60,27 @@
       min-width: 140px;
     }
 
+    /* Анімації для збільшення/зменшення */
+    .increase {
+      animation: fadeGreen 0.5s ease;
+    }
+
+    .decrease {
+      animation: fadeRed 0.5s ease;
+    }
+
+    @keyframes fadeGreen {
+      0% { color: green; opacity: 0; transform: scale(1.2); }
+      50% { color: green; opacity: 0.5; }
+      100% { color: white; opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeRed {
+      0% { color: red; opacity: 0; transform: scale(1.2); }
+      50% { color: red; opacity: 0.5; }
+      100% { color: white; opacity: 1; transform: scale(1); }
+    }
+
     .note {
       font-size: 18px;
       font-weight: bold;
@@ -84,16 +105,15 @@
       margin-top: 20px;
     }
 
-    /* FlipClock рамка */
     .flip-clock-wrapper {
       background-color: rgba(0, 0, 0, 0.6);
       border: 2px solid orange;
       border-radius: 20px;
       padding: 20px 30px;
       box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
-      display: block; /* прибираємо flex */
+      display: block;
       width: fit-content;
-      overflow: hidden; /* щоб не розтягувалось */
+      overflow: hidden;
       margin: 0 auto;
     }
 
@@ -101,22 +121,20 @@
       width: fit-content;
     }
 
-    /* Забезпечуємо рядковий вигляд */
     .flip-clock-wrapper ul {
       float: left;
     }
 
-    /* Зменшення розміру цифр */
     .flip-clock-wrapper ul li a div div.inn {
       font-size: 50px;
     }
 
- .rembo-title {
-  font-size: 26px;          /* зробимо більший */
-  color: orange;            /* замінимо колір */
-  margin-bottom: 10px;
-  text-transform: uppercase;
-}
+    .rembo-title {
+      font-size: 26px;
+      color: orange;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
@@ -162,7 +180,16 @@
       const valueChanged = newValue !== oldValue;
 
       if (valueChanged) {
+        el.classList.remove("increase", "decrease");
+
+        if (newValue > oldValue) {
+          el.classList.add("increase");
+        } else {
+          el.classList.add("decrease");
+        }
+
         el.innerText = Number(newValue).toLocaleString();
+        setTimeout(() => el.classList.remove("increase", "decrease"), 500);
       }
     }
 
