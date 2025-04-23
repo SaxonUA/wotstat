@@ -39,15 +39,15 @@
 
     .line {
       display: flex;
-      justify-content: center; /* вирівнювання по правому краю */
+      justify-content: center;
       align-items: center;
-      gap: 10px; /* мінімальний відступ */
+      gap: 10px;
     }
 
     .label {
       font-size: 22px;
       color: orange;
-      text-align: right; /* текст справа */
+      text-align: right;
     }
 
     .value {
@@ -58,10 +58,9 @@
       border-radius: 10px;
       padding: 10px 20px;
       min-width: 140px;
-      text-align: left; /* текст зліва */
+      text-align: left;
     }
 
-    /* Анімації для збільшення/зменшення */
     .increase {
       animation: fadeGreen 0.5s ease;
     }
@@ -106,17 +105,20 @@
       margin-top: 20px;
     }
 
+    /* Зовнішня помаранчева рамка */
     .flip-clock-wrapper {
-      background-color: rgba(0, 0, 0, 0.0);
-      border: 2px solid orange;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 2px solid white;
       border-radius: 20px;
-      padding: 20px 30px;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.0);
+      padding: 10px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
       display: block;
       width: fit-content;
       overflow: hidden;
       margin: 0 auto;
     }
+
+    
 
     .flip-clock-wrapper ul {
       float: left;
@@ -150,7 +152,9 @@
     <div class="countdown-wrapper">
       <div class="flip-clock-wrapper">
         <div class="rembo-title">До кінця челенджу залишилось:</div>
-        <div id="flip-clock"></div>
+        <div class="flip-clock-inner">
+          <div id="flip-clock"></div>
+        </div>
       </div>
     </div>
   </div>
