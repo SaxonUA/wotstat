@@ -20,7 +20,7 @@
     }
 
     .overlay {
-      background-color: rgba(0, 0, 0, 0.0);
+      background-color: rgba(0, 0, 0, 0.5);
       border-radius: 30px;
       padding: 25px 50px;
       width: fit-content;
@@ -107,7 +107,7 @@
 
     /* Зовнішня помаранчева рамка */
     .flip-clock-wrapper {
-      background-color: rgba(0, 0, 0, 0.0);
+      background-color: rgba(0, 0, 0, 0.1);
       border: px solid white;
       border-radius: 20px;
       padding: 20px;
@@ -128,12 +128,17 @@
       font-size: 50px;
     }
 
-    .rembo-title {
-      font-size: 40px;
-      color: orange;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-    }
+.rembo-title {
+  font-size: 40px;
+  color: white;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* тінь */
+  letter-spacing: 4px; /* розрядка для об'єму */
+  
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
   </style>
 </head>
 <body>
