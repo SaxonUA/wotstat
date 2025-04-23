@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Рембо Челендж</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
   <style>
     body {
       background: url('РЕМБО САКСОН (1).png') no-repeat center center;
@@ -20,9 +21,7 @@
 
     .overlay {
       background-color: rgba(0, 0, 0, 0.0);
-     border: 0px solid white;
       border-radius: 30px;
-   
       padding: 25px 50px;
       width: fit-content;
       margin: 0 auto;
@@ -35,7 +34,6 @@
     }
 
     .divider {
-     
       margin: 20px 0;
     }
 
@@ -104,10 +102,9 @@
       text-transform: uppercase;
     }
 
-    .rembo-time {
-      font-size: 28px;
-      font-weight: bold;
-      color: white;
+    /* FlipClock positioning */
+    .flip-clock-wrapper {
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -120,17 +117,22 @@
       <div class="value" id="left2">...</div>
     </div>
     <div class="divider"></div>
-        <div class="note note-gradient">+200 урону за 1 лайк YouTube</div>
+    <div class="note note-gradient">+200 урону за 1 лайк YouTube</div>
     <div class="note note-gradient">+1 урон за 1 тап в TikTok</div>
-     <div class="note note-gradient">+50 урону за 1 грн</div>
+    <div class="note note-gradient">+50 урону за 1 грн</div>
+
     <div class="countdown-wrapper">
       <div class="countdown-box-rembo">
-        <div class="rembo-title">До кінця челенджу:</div>
+        <div class="rembo-title">До кінця челенджу (текстово):</div>
         <div id="countdown" class="rembo-time">...</div>
       </div>
+      <!-- FlipClock timer -->
+      <div class="flip-clock-wrapper" id="flip-clock"></div>
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
     const GID = "1630188258";
@@ -151,10 +153,6 @@
       const valueChanged = newValue !== oldValue;
 
       if (valueChanged) {
-        el.classList.add("updated");
-        el.innerText = Number(newValue).toLocaleString();
-        setTimeout(() => el.classList.remove("updated"), 500);
-      } else {
         el.innerText = Number(newValue).toLocaleString();
       }
     }
@@ -187,6 +185,27 @@
       }
     }
 
+    // FlipClock таймер за Києвом
+    function getTimeLeftKyiv() {
+      const now = new Date();
+      const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
+      const end = new Date(kyivNow);
+      end.setHours(23, 59, 59, 999);
+      return Math.floor((end - kyivNow) / 1000);
+    }
+
+    $(document).ready(function() {
+      const flipClock = $('#flip-clock').FlipClock(getTimeLeftKyiv(), {
+        clockFace: 'HourlyCounter',
+        countdown: true,
+        autoStart: true
+      });
+      setInterval(() => {
+        flipClock.setTime(getTimeLeftKyiv());
+      }, 60000);
+    });
+
+    // Основні оновлення
     updateUI();
     updateCountdown();
     setInterval(updateUI, 15000);
