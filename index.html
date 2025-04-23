@@ -84,15 +84,31 @@
       margin-top: 20px;
     }
 
-    .countdown-box-rembo {
+    /* FlipClock рамка */
+    .flip-clock-wrapper {
       background-color: rgba(0, 0, 0, 0.6);
-      color: white;
       border: 2px solid orange;
       border-radius: 20px;
       padding: 20px 30px;
       box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
-      display: inline-block;
-      min-width: 360px;
+      display: block; /* прибираємо flex */
+      width: fit-content;
+      overflow: hidden; /* щоб не розтягувалось */
+      margin: 0 auto;
+    }
+
+    #flip-clock {
+      width: fit-content;
+    }
+
+    /* Забезпечуємо рядковий вигляд */
+    .flip-clock-wrapper ul {
+      float: left;
+    }
+
+    /* Зменшення розміру цифр */
+    .flip-clock-wrapper ul li a div div.inn {
+      font-size: 50px;
     }
 
     .rembo-title {
@@ -100,11 +116,6 @@
       color: #ffff66;
       margin-bottom: 10px;
       text-transform: uppercase;
-    }
-
-    /* FlipClock positioning */
-    .flip-clock-wrapper {
-      margin-top: 20px;
     }
   </style>
 </head>
@@ -122,12 +133,10 @@
     <div class="note note-gradient">+50 урону за 1 грн</div>
 
     <div class="countdown-wrapper">
-      <div class="countdown-box-rembo">
-        <div class="rembo-title">До кінця челенджу (текстово):</div>
-        <div id="countdown" class="rembo-time">...</div>
+      <div class="flip-clock-wrapper">
+        <div class="rembo-title">До кінця челенджу залишилось:</div>
+        <div id="flip-clock"></div>
       </div>
-      <!-- FlipClock timer -->
-      <div class="flip-clock-wrapper" id="flip-clock"></div>
     </div>
   </div>
 
@@ -168,24 +177,6 @@
       }
     }
 
-    function updateCountdown() {
-      const now = new Date();
-      const target = new Date();
-      target.setHours(23, 59, 59, 999);
-      const diff = target - now;
-      const countdown = document.getElementById("countdown");
-      if (!countdown) return;
-      if (diff <= 0) {
-        countdown.innerText = "Час вийшов!";
-      } else {
-        const hrs = String(Math.floor(diff / 3600000)).padStart(2, '0');
-        const mins = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-        const secs = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-        countdown.innerText = `${hrs}г ${mins}хв ${secs}сек`;
-      }
-    }
-
-    // FlipClock таймер за Києвом
     function getTimeLeftKyiv() {
       const now = new Date();
       const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
@@ -205,11 +196,8 @@
       }, 60000);
     });
 
-    // Основні оновлення
     updateUI();
-    updateCountdown();
     setInterval(updateUI, 15000);
-    setInterval(updateCountdown, 1000);
   </script>
 </body>
 </html>
