@@ -6,55 +6,109 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
-    body{
-      background:url('РЕМБО САКСОН (1).png') no-repeat center/cover;
-      font-family:'Arial Black',sans-serif;
-      color:#fff;text-align:center;margin:0;padding:0;height:100vh;
-      display:flex;flex-direction:column;justify-content:center
+    body {
+      background: url('РЕМБО САКСОН (1).png') no-repeat center/cover;
+      font-family: 'Arial Black', sans-serif;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    .overlay{padding:25px 50px;margin:auto;background:transparent;border-radius:30px;width:fit-content}
 
-    .title{font-size:28px;font-weight:bold;text-shadow:2px 2px 4px rgba(0,0,0,.7)}
+    .overlay {
+      padding: 25px 50px;
+      margin: auto;
+      background: transparent;
+      border-radius: 30px;
+      width: fit-content;
+    }
 
-    .damage-block{display:flex;flex-direction:column;align-items:center;margin-top:40px}
-    .countdown-wrapper{margin-top:60px}
+    .damage-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+    }
 
-    .label{font-size:40px;color:orange;font-family:'Orbitron',sans-serif;
-           text-shadow:2px 2px 4px rgba(0,0,0,.7),0 0 10px rgba(255,140,0,.8);margin:0}
+    .label {
+      font-size: 40px;
+      color: orange;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 140, 0, .8);
+      margin: 0;
+    }
 
-    .flip-damage .flip-clock-wrapper{
-      background:rgba(0,0,0,.5);border:2px solid orange;border-radius:10px;
-      box-shadow:0 0 20px rgba(255,140,0,.6);display:inline-block
+    .flip-damage .flip-clock-wrapper {
+      background: rgba(0, 0, 0, .5);
+      border: 2px solid orange;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 140, 0, .6);
+      display: inline-block;
     }
 
     .flip-damage.increase .flip-clock-wrapper {
       animation: glow-green 1.5s ease;
     }
+
     .flip-damage.decrease .flip-clock-wrapper {
       animation: glow-red 1.5s ease;
     }
 
     @keyframes glow-green {
-      0% { box-shadow: 0 0 20px rgba(0,255,0,0.9); border-color: lime; }
-      100% { box-shadow: 0 0 20px rgba(255,140,0,0.6); border-color: orange; }
+      0% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.9); border-color: lime; }
+      100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.6); border-color: orange; }
     }
+
     @keyframes glow-red {
-      0% { box-shadow: 0 0 20px rgba(255,0,0,0.9); border-color: red; }
-      100% { box-shadow: 0 0 20px rgba(255,140,0,0.6); border-color: orange; }
+      0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); border-color: red; }
+      100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.6); border-color: orange; }
     }
 
-    #damage-clock{display:flex;justify-content:center}
+    .note {
+      font-size: 25px;
+      font-weight: bold;
+      margin: 5px 0;
+    }
 
-    .note{font-size:25px;font-weight:bold;margin:5px 0}
-    .note-gradient{
-      background:linear-gradient(270deg,orange,white);background-size:400% 50%;
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:grad 6s ease infinite}
-    @keyframes grad{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+    .note-gradient {
+      background: linear-gradient(270deg, orange, white);
+      background-size: 400% 50%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: grad 6s ease infinite;
+    }
 
-    .flip-clock-wrapper ul li a div div.inn{font-size:70px}
+    @keyframes grad {
+      0% { background-position: 0 50% }
+      50% { background-position: 100% 50% }
+      100% { background-position: 0 50% }
+    }
 
-    .rembo-title{font-family:'Orbitron',sans-serif;font-size:45px;color:orange;margin-bottom:10px;
-                 text-transform:uppercase;text-shadow:2px 2px 4px rgba(0,0,0,.7),0 0 10px rgba(255,140,0,.8)}
+    .flip-clock-wrapper ul li a div div.inn {
+      font-size: 70px;
+    }
+
+    .countdown-wrapper {
+      margin-top: 60px;
+    }
+
+    .rembo-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 45px;
+      color: orange;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 140, 0, .8);
+    }
+
+    #damage-clock {
+      display: flex;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
@@ -81,61 +135,77 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
   <script>
-    const SHEET_ID="17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const GID="1630188258";
+    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
+    const GID = "1630188258";
 
-    async function fetchSingleCell(range){
-      const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&range=${range}&tqx=out:json`;
-      const res=await fetch(url);
-      const txt=await res.text();
-      const json=JSON.parse(txt.substring(47).slice(0,-2));
-      return json.table.rows[0].c[0]?.v||0;
+    async function fetchSingleCell(range) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&range=${range}&tqx=out:json`;
+      const res = await fetch(url);
+      const txt = await res.text();
+      const json = JSON.parse(txt.substring(47).slice(0, -2));
+      return json.table.rows[0].c[0]?.v || 0;
     }
 
-    $(async function(){
-      const flipClock=$('#flip-clock').FlipClock(getTimeLeftKyiv(),{
-        clockFace:'HourlyCounter',countdown:true,autoStart:true
+    $(async function () {
+      const flipClock = $('#flip-clock').FlipClock(getTimeLeftKyiv(), {
+        clockFace: 'HourlyCounter', countdown: true, autoStart: true
       });
       $('.flip-clock-divider.hours .flip-clock-label').text('Години');
       $('.flip-clock-divider.minutes .flip-clock-label').text('Хвилини');
       $('.flip-clock-divider.seconds .flip-clock-label').text('Секунди');
 
-      setInterval(()=>{
+      setInterval(() => {
         flipClock.setTime(getTimeLeftKyiv());
-      },60000);
+      }, 60000);
 
-      const damageClock=$('#damage-clock').FlipClock(0,{clockFace:'Counter',autoStart:false});
-      let previousDamage=0;
+      const damageClock = $('#damage-clock').FlipClock(0, { clockFace: 'Counter', autoStart: false });
+      let currentDamage = 0;
+      let animationInterval = null;
+      let animationInProgress = false;
 
-      async function updateDamage(){
-        try{
-          const raw=await fetchSingleCell("C14");
-          const value=parseInt(raw||0);
-          const padded=value.toString().padStart(6,'0');
-          damageClock.setTime(padded);
+      async function animateDamage(newValue) {
+        if (animationInProgress) clearInterval(animationInterval);
+        if (currentDamage === newValue) return;
 
-          const container=document.querySelector('.flip-damage');
-          if(value>previousDamage){
-            container.classList.remove('decrease');
-            container.classList.add('increase');
-          }else if(value<previousDamage){
-            container.classList.remove('increase');
-            container.classList.add('decrease');
+        const step = newValue > currentDamage ? 1 : -1;
+        const container = document.querySelector('.flip-damage');
+
+        container.classList.toggle('increase', step > 0);
+        container.classList.toggle('decrease', step < 0);
+
+        animationInProgress = true;
+        animationInterval = setInterval(() => {
+          currentDamage += step;
+          damageClock.setTime(currentDamage);
+          if (currentDamage === newValue) {
+            clearInterval(animationInterval);
+            animationInProgress = false;
+            setTimeout(() => container.classList.remove('increase', 'decrease'), 1500);
           }
-          previousDamage=value;
-
-          setTimeout(()=>{container.classList.remove('increase','decrease');},1500);
-        }catch(e){console.error("Помилка оновлення дамага:",e);}
+        }, 30);
       }
+
+      async function updateDamage() {
+        try {
+          let raw = await fetchSingleCell("C14");
+          raw = raw.toString().replace(/\s/g, '');
+          const value = parseInt(raw || 0);
+          animateDamage(value);
+        } catch (e) {
+          console.error("Помилка оновлення дамага:", e);
+        }
+      }
+
       await updateDamage();
-      setInterval(updateDamage,15000);
+      setInterval(updateDamage, 15000);
     });
 
-    function getTimeLeftKyiv(){
-      const now=new Date();
-      const kyiv=new Date(now.toLocaleString("en-US",{timeZone:"Europe/Kyiv"}));
-      const end=new Date(kyiv);end.setHours(23,59,59,999);
-      return Math.floor((end-kyiv)/1000);
+    function getTimeLeftKyiv() {
+      const now = new Date();
+      const kyiv = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
+      const end = new Date(kyiv);
+      end.setHours(23, 59, 59, 999);
+      return Math.floor((end - kyiv) / 1000);
     }
   </script>
 </body>
