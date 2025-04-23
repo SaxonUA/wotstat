@@ -32,54 +32,32 @@
       font-size: 28px;
       font-weight: bold;
       color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
     }
 
     .divider {
       margin: 20px 0;
     }
 
-    .line {
+    .damage-block {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
     }
 
     .label {
       font-size: 22px;
       color: orange;
-      text-align: right;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7), 0 0 10px rgba(255,140,0,0.8);
+      margin-bottom: 10px;
     }
 
-    .value {
-      font-size: 36px;
-      font-weight: bold;
-      background: repeating-linear-gradient(-45deg, rgba(128,128,128,0.3) 0px, rgba(128,128,128,0.3) 8px, transparent 8px, transparent 16px);
+    .flip-damage .flip-clock-wrapper {
+      background-color: rgba(0, 0, 0, 0.5);
       border: 2px solid orange;
       border-radius: 10px;
-      padding: 10px 20px;
-      min-width: 140px;
-      text-align: left;
-    }
-
-    .increase {
-      animation: fadeGreen 0.5s ease;
-    }
-
-    .decrease {
-      animation: fadeRed 0.5s ease;
-    }
-
-    @keyframes fadeGreen {
-      0% { color: lime; opacity: 0; transform: scale(1.1); }
-      50% { color: lime; opacity: 0.5; }
-      100% { color: white; opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes fadeRed {
-      0% { color: red; opacity: 0; transform: scale(1.1); }
-      50% { color: red; opacity: 0.5; }
-      100% { color: white; opacity: 1; transform: scale(1); }
+      box-shadow: 0 0 20px rgba(255, 140, 0, 0.6);
     }
 
     .note {
@@ -106,21 +84,6 @@
       margin-top: 20px;
     }
 
-    .flip-clock-wrapper {
-      background-color: rgba(0, 0, 0, 0.0);
-     
-      border-radius: 20px;
-      padding: 20px 30px;
-      
-      display: block;
-      width: fit-content;
-      margin: 0 auto;
-    }
-
-    .flip-clock-wrapper ul {
-      float: left;
-    }
-
     .flip-clock-wrapper ul li a div div.inn {
       font-size: 70px;
     }
@@ -132,18 +95,21 @@
       margin-bottom: 10px;
       text-transform: uppercase;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.7), 0 0 10px rgba(255,140,0,0.8);
-      letter-spacing: 2px;
     }
   </style>
 </head>
 <body>
   <div class="overlay">
-    <div class="title"> РЕМБО ЧЕЛЕНДЖ </div>
+    <div class="title">РЕМБО ЧЕЛЕНДЖ</div>
     <div class="divider"></div>
-    <div class="line">
-      <div class="label">ЗАЛИШИЛОСЬ<br>НАСТРІЛЯТИ:</div>
-      <div class="value" id="left2">...</div>
+
+    <div class="damage-block">
+      <div class="label">ЗАЛИШИЛОСЬ НАСТРІЛЯТИ:</div>
+      <div class="flip-damage">
+        <div id="damage-clock"></div>
+      </div>
     </div>
+
     <div class="divider"></div>
     <div class="note note-gradient">+200 урону за 1 лайк YouTube</div>
     <div class="note note-gradient">+1 урон за 1 тап в TikTok</div>
@@ -151,7 +117,7 @@
 
     <div class="countdown-wrapper">
       <div class="flip-clock-wrapper">
-        <div class="rembo-title">До кінця челенджу</div>
+      <div class="rembo-title">До кінця челенджу</div>
          <div class="rembo-title">залишилось:</div>
         <div id="flip-clock"></div>
       </div>
@@ -172,47 +138,8 @@
       return json.table.rows[0].c[0]?.v || 0;
     }
 
-    function animateValue(id, newValue) {
-      const el = document.getElementById(id);
-      if (!el) return;
-
-      const oldValue = parseInt(el.innerText.replace(/\D/g, "")) || 0;
-      const valueChanged = newValue !== oldValue;
-
-      if (valueChanged) {
-        el.classList.remove("increase", "decrease");
-
-        if (newValue > oldValue) {
-          el.classList.add("increase");
-        } else {
-          el.classList.add("decrease");
-        }
-
-        el.innerText = Number(newValue).toLocaleString();
-        setTimeout(() => el.classList.remove("increase", "decrease"), 500);
-      }
-    }
-
-    async function updateUI() {
-      try {
-        const left = await fetchSingleCell("C14");
-        animateValue("left2", left);
-      } catch (err) {
-        console.error("Помилка оновлення даних:", err);
-        const el = document.getElementById("left2");
-        if (el) el.innerText = "Помилка";
-      }
-    }
-
-    function getTimeLeftKyiv() {
-      const now = new Date();
-      const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
-      const end = new Date(kyivNow);
-      end.setHours(23, 59, 59, 999);
-      return Math.floor((end - kyivNow) / 1000);
-    }
-
     $(document).ready(function() {
+      // Таймер
       const flipClock = $('#flip-clock').FlipClock(getTimeLeftKyiv(), {
         clockFace: 'HourlyCounter',
         countdown: true,
@@ -221,10 +148,32 @@
       setInterval(() => {
         flipClock.setTime(getTimeLeftKyiv());
       }, 60000);
+
+      // Дамаг
+      const damageClock = $('#damage-clock').FlipClock(0, {
+        clockFace: 'Counter',
+        autoStart: false
+      });
+
+      async function updateDamage() {
+        try {
+          const left = await fetchSingleCell("C14");
+          damageClock.setValue(left);
+        } catch (err) {
+          console.error("Помилка оновлення дамага:", err);
+        }
+      }
+      updateDamage();
+      setInterval(updateDamage, 15000);
     });
 
-    updateUI();
-    setInterval(updateUI, 15000);
+    function getTimeLeftKyiv() {
+      const now = new Date();
+      const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
+      const end = new Date(kyivNow);
+      end.setHours(23, 59, 59, 999);
+      return Math.floor((end - kyivNow) / 1000);
+    }
   </script>
 </body>
 </html>
