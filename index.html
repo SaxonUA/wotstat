@@ -20,12 +20,12 @@
       display: inline-block;
       margin-top: 10px;
     }
-  .timer-container {
+    .timer-container {
       background: rgba(0, 0, 0, 0.5);
       padding: 20px;
       border-radius: 15px;
     }
-  .wrapper {
+    .wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -35,53 +35,58 @@
       height: 50px;
       width: 100%;
     }
-  .title {
+    .title {
       font-family: 'Orbitron', sans-serif;
       font-size: 48px;
       color: orange;
       text-shadow: 0 0 10px rgba(255, 140, 0, 0.8);
       margin-bottom: 10px;
     }
-  .subtitle {
+    .subtitle {
       font-family: 'Orbitron', sans-serif;
       font-size: 36px;
       color: orange;
       text-shadow: 0 0 8px rgba(255, 140, 0, 0.8);
     }
-  .alert {
-      animation: blink 1s infinite;
+    .alert-red {
+      animation: blink-red 1s infinite;
     }
-
-    @keyframes blink {
+    @keyframes blink-red {
       0%, 100% { background-color: rgba(255, 0, 0, 0.5); }
+      50% { background-color: rgba(0, 0, 0, 0.5); }
+    }
+    .blink-green {
+      animation: blink-green 0.5s 2;
+    }
+    @keyframes blink-green {
+      0%, 100% { background-color: rgba(0, 255, 0, 0.5); }
       50% { background-color: rgba(0, 0, 0, 0.5); }
     }
   </style>
 </head>
 <body>
   <div class="wrapper">
-    <div class="title">ЗАЛИШИЛОСЬ</div>
+    <div class="title"></div>
     <div class="timer-container">
-    <div class="clock" id="timer"></div>
-  </div>
+      <div class="clock" id="timer"></div>
+    </div>
 
     <div class="spacer"></div>
     <div class="spacer"></div>
-    <div class="subtitle">СТРІМ ЙДЕ</div>
-    
+    <div class="subtitle"></div>
 
     <div class="timer-container">
-    <div class="clock" id="stopwatch"></div>
-  </div>
+      <div class="clock" id="stopwatch"></div>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/lang/uk.js"></script>
   <script>
-    const STREAM_DURATION = 2 * 60 * 60; // 2 години в секундах
     let clock;
     let lastSeconds = 0;
+    let lastDonationSum = 0;
     let animationInterval = null;
 
     async function fetchDonationSum() {
@@ -95,10 +100,17 @@
         const text = await response.text();
         const json = JSON.parse(text.substring(47).slice(0, -2));
         const donationSum = parseFloat(json.table.rows[0].c[0].v);
+
+        if (donationSum > lastDonationSum) {
+          $('.timer-container:first').addClass('blink-green');
+          setTimeout(() => $('.timer-container:first').removeClass('blink-green'), 1000);
+        }
+        lastDonationSum = donationSum;
+
         return donationSum;
       } catch (error) {
         console.error('Error fetching donation sum:', error);
-        return 0;
+        return lastDonationSum;
       }
     }
 
@@ -108,9 +120,9 @@
       const streamStart = new Date(kyivNow);
       streamStart.setHours(16, 0, 0, 0);
       if (kyivNow > streamStart) {
-        return new Date(streamStart.getTime() + STREAM_DURATION * 1000 + Math.floor(donationSum / 5) * 60 * 1000);
+        return new Date(streamStart.getTime() + 2 * 60 * 60 * 1000 + Math.floor(donationSum / 5) * 60 * 1000);
       } else {
-        return streamStart; // ще не почалося
+        return streamStart;
       }
     }
 
@@ -142,7 +154,8 @@
           return;
         }
         lastSeconds += (targetSeconds > lastSeconds) ? 5 : -5;
-        if ((targetSeconds > lastSeconds && lastSeconds + 5 > targetSeconds) || (targetSeconds < lastSeconds && lastSeconds - 5 < targetSeconds)) {
+        if ((targetSeconds > lastSeconds && lastSeconds + 5 > targetSeconds) || 
+            (targetSeconds < lastSeconds && lastSeconds - 5 < targetSeconds)) {
           lastSeconds = targetSeconds;
         }
         clock.setTime(lastSeconds);
@@ -151,21 +164,25 @@
 
     async function updateClockTime() {
       const remainingSeconds = await calculateRemainingSeconds();
-      if (remainingSeconds <= 119) {
+      if (remainingSeconds <= 300) {
+        $('.timer-container:first').addClass('alert-red');
+      } else {
+        $('.timer-container:first').removeClass('alert-red');
+      }
+      if (remainingSeconds !== lastSeconds && remainingSeconds > 300) {
+        animateClockTo(remainingSeconds);
+      } else if (remainingSeconds <= 300 && remainingSeconds !== lastSeconds) {
         if (animationInterval) clearInterval(animationInterval);
         lastSeconds = remainingSeconds;
         clock.setTime(remainingSeconds);
         clock.start();
-        $('.timer-container:first').addClass('alert');
-      } else {
-        $('.timer-container:first').removeClass('alert');
-      }
-      if (remainingSeconds !== lastSeconds && remainingSeconds > 119) {
-        animateClockTo(remainingSeconds);
       }
     }
 
     $(document).ready(function() {
+      initClock();
+      setInterval(updateClockTime, 15000);
+
       setTimeout(() => {
         $('.flip-clock-label').each(function() {
           const text = $(this).text().trim();
@@ -175,8 +192,6 @@
           if (text === 'Seconds') $(this).text('Секунди');
         });
       }, 500);
-      initClock();
-      setInterval(updateClockTime, 15000); // Оновлювати кожні 15 секунд
     });
   </script>
   <script>
