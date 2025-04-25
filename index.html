@@ -142,7 +142,7 @@
       const delay = 5;
 
       const totalAnimationMs = absDiff * delay;
-      const compensationSeconds = Math.floor(totalAnimationMs / 1000);
+      const compensationSeconds = Math.floor(totalAnimationMs / 1000 * 1.15); // +15% компенсації
 
       const adjustedTime = newTime - compensationSeconds;
       const step = diff > 0 ? 1 : -1;
