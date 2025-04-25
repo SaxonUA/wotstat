@@ -21,10 +21,8 @@
       margin-top: 10px;
     }
     .timer-container {
-      padding: 20px;
+      padding: 4px;
       border-radius: 15px;
-      box-shadow: 0 0 0 4px transparent;
-      transition: box-shadow 0.3s ease;
     }
     .wrapper {
       display: flex;
@@ -53,15 +51,15 @@
       animation: blink-red 1s infinite;
     }
     @keyframes blink-red {
-      0%, 100% { box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.7); }
-      50% { box-shadow: 0 0 0 4px transparent; }
+      0%, 100% { background-color: rgba(255, 0, 0, 0.5); }
+      50% { background-color: transparent; }
     }
     .blink-green {
       animation: blink-green 1s 1;
     }
     @keyframes blink-green {
-      0%, 100% { box-shadow: 0 0 0 4px rgba(0, 255, 0, 0.7); }
-      50% { box-shadow: 0 0 0 4px transparent; }
+      0%, 100% { background-color: rgba(0, 255, 0, 0.5); }
+      50% { background-color: transparent; }
     }
     .flip-clock-wrapper .flip-clock-label {
       visibility: hidden;
