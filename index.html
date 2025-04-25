@@ -62,6 +62,13 @@
       0%, 100% { background-color: rgba(0, 255, 0, 0.5); }
       50% { background-color: rgba(0, 0, 0, 0.5); }
     }
+    .flip-clock-wrapper .flip-clock-label {
+      visibility: hidden;
+    }
+    .flip-clock-dot {
+      background: white !important;
+      box-shadow: none !important;
+    }
   </style>
 </head>
 <body>
@@ -82,12 +89,10 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/lang/uk.js"></script>
   <script>
     let clock;
-    let lastSeconds = 0;
     let lastDonationSum = 0;
-    let animationInterval = null;
+    const STREAM_START_TIME = new Date("2025-04-24T16:00:00+03:00");
 
     async function fetchDonationSum() {
       const sheetId = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
@@ -103,10 +108,9 @@
 
         if (donationSum > lastDonationSum) {
           $('.timer-container:first').addClass('blink-green');
-          setTimeout(() => $('.timer-container:first').removeClass('blink-green'), 1000); // 1 секунда
+          setTimeout(() => $('.timer-container:first').removeClass('blink-green'), 1000);
         }
         lastDonationSum = donationSum;
-
         return donationSum;
       } catch (error) {
         console.error('Error fetching donation sum:', error);
@@ -115,15 +119,9 @@
     }
 
     function calculateStreamEnd(donationSum) {
-      const now = new Date();
-      const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
-      const streamStart = new Date(kyivNow);
-      streamStart.setHours(16, 0, 0, 0);
-      if (kyivNow > streamStart) {
-        return new Date(streamStart.getTime() + 2 * 60 * 60 * 1000 + Math.floor(donationSum / 5) * 60 * 1000);
-      } else {
-        return streamStart;
-      }
+      const baseDuration = 2 * 60 * 60;
+      const extraSeconds = donationSum * 12;
+      return new Date(STREAM_START_TIME.getTime() + (baseDuration + extraSeconds) * 1000);
     }
 
     async function calculateRemainingSeconds() {
@@ -132,66 +130,56 @@
       const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
       const streamEnd = calculateStreamEnd(donationSum);
       const remainingSeconds = Math.floor((streamEnd - kyivNow) / 1000);
-      return remainingSeconds > 0 ? remainingSeconds : 0;
+      return { remainingSeconds: remainingSeconds > 0 ? remainingSeconds : 1 };
+    }
+
+    async function smoothSetTime(newTime) {
+      const currentTime = clock.getTime().time;
+      const diff = newTime - currentTime;
+
+      if (diff === 0) return;
+
+      const absDiff = Math.abs(diff);
+      const delay = 5; // Фіксована затримка
+
+      const totalAnimationMs = absDiff * delay;
+      const compensationSeconds = Math.floor(totalAnimationMs / 1000); // Тільки 1× компенсація
+
+      const adjustedTime = newTime - compensationSeconds;
+      const step = diff > 0 ? 1 : -1;
+
+      for (let i = currentTime + step; i !== adjustedTime + step; i += step) {
+        clock.setTime(i);
+        await new Promise(r => setTimeout(r, delay));
+      }
     }
 
     async function initClock() {
-      const remainingSeconds = await calculateRemainingSeconds();
-      lastSeconds = remainingSeconds;
+      const { remainingSeconds } = await calculateRemainingSeconds();
       clock = $('#timer').FlipClock(remainingSeconds, {
-        language: 'uk',
         clockFace: 'DailyCounter',
         countdown: true,
         autoStart: true
       });
     }
 
-    async function animateClockTo(targetSeconds) {
-      if (animationInterval) clearInterval(animationInterval);
-      animationInterval = setInterval(() => {
-        if (lastSeconds === targetSeconds) {
-          clearInterval(animationInterval);
-          return;
-        }
-        lastSeconds += (targetSeconds > lastSeconds) ? 5 : -5;
-        if ((targetSeconds > lastSeconds && lastSeconds + 5 > targetSeconds) || 
-            (targetSeconds < lastSeconds && lastSeconds - 5 < targetSeconds)) {
-          lastSeconds = targetSeconds;
-        }
-        clock.setTime(lastSeconds);
-      }, 5);
-    }
-
     async function updateClockTime() {
-      const remainingSeconds = await calculateRemainingSeconds();
+      const { remainingSeconds } = await calculateRemainingSeconds();
+
       if (remainingSeconds <= 300) {
         $('.timer-container:first').addClass('alert-red');
       } else {
         $('.timer-container:first').removeClass('alert-red');
       }
-      if (remainingSeconds !== lastSeconds && remainingSeconds > 300) {
-        animateClockTo(remainingSeconds);
-      } else if (remainingSeconds <= 300 && remainingSeconds !== lastSeconds) {
-        if (animationInterval) clearInterval(animationInterval);
-        lastSeconds = remainingSeconds;
-        clock.setTime(remainingSeconds);
-        clock.start();
+
+      if (remainingSeconds !== clock.getTime().time) {
+        await smoothSetTime(remainingSeconds);
       }
     }
 
     $(document).ready(function() {
       initClock();
       setInterval(updateClockTime, 15000);
-
-      setTimeout(() => {
-        $('.flip-clock-label').each(function() {
-          const text = $(this).text().trim();
-          if (text === 'Days') $(this).text('Дні');
-          if (text === 'Hours') $(this).text('Години');
-          if (text === 'Minutes') $(this).text('Хвилини');
-          if (text === 'Seconds') $(this).text('Секунди');
-        });
-      }, 500);
     });
   </script>
   <script>
@@ -200,9 +188,7 @@
     function calculateElapsedSeconds() {
       const now = new Date();
       const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
-      const streamStart = new Date(kyivNow);
-      streamStart.setHours(16, 0, 0, 0);
-      const elapsedSeconds = Math.floor((kyivNow - streamStart) / 1000);
+      const elapsedSeconds = Math.floor((kyivNow - STREAM_START_TIME) / 1000);
       return elapsedSeconds > 0 ? elapsedSeconds : 0;
     }
 
@@ -213,15 +199,6 @@
         countdown: false,
         autoStart: true
       });
-      setTimeout(() => {
-        $('#stopwatch .flip-clock-label').each(function() {
-          const text = $(this).text().trim();
-          if (text === 'Days') $(this).text('Дні');
-          if (text === 'Hours') $(this).text('Години');
-          if (text === 'Minutes') $(this).text('Хвилини');
-          if (text === 'Seconds') $(this).text('Секунди');
-        });
-      }, 500);
     }
 
     $(document).ready(function() {
