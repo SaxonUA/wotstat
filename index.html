@@ -21,9 +21,10 @@
       margin-top: 10px;
     }
     .timer-container {
-      background: rgba(0, 0, 0, 0.0);
       padding: 20px;
       border-radius: 15px;
+      box-shadow: 0 0 0 4px transparent;
+      transition: box-shadow 0.3s ease;
     }
     .wrapper {
       display: flex;
@@ -52,15 +53,15 @@
       animation: blink-red 1s infinite;
     }
     @keyframes blink-red {
-      0%, 100% { background-color: rgba(255, 0, 0, 0.5); }
-      25% { background-color: rgba(0, 0, 0, 0.5); }
+      0%, 100% { box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.7); }
+      50% { box-shadow: 0 0 0 4px transparent; }
     }
     .blink-green {
       animation: blink-green 1s 1;
     }
     @keyframes blink-green {
-      0%, 100% { background-color: rgba(0, 255, 0, 0.5); }
-      25% { background-color: rgba(0, 0, 0, 0.5); }
+      0%, 100% { box-shadow: 0 0 0 4px rgba(0, 255, 0, 0.7); }
+      50% { box-shadow: 0 0 0 4px transparent; }
     }
     .flip-clock-wrapper .flip-clock-label {
       visibility: hidden;
@@ -140,10 +141,10 @@
       if (diff === 0) return;
 
       const absDiff = Math.abs(diff);
-      const delay = 5; // Фіксована затримка
+      const delay = 5;
 
       const totalAnimationMs = absDiff * delay;
-      const compensationSeconds = Math.floor(totalAnimationMs / 1000); // Тільки 1× компенсація
+      const compensationSeconds = Math.floor(totalAnimationMs / 1000);
 
       const adjustedTime = newTime - compensationSeconds;
       const step = diff > 0 ? 1 : -1;
