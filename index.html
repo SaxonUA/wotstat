@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>WANTED COUNT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       background-color: transparent;
-      font-family: 'Special Elite', serif;
+      font-family: 'Rock Salt', cursive;
       color: #4B2E13;
       display: flex;
       align-items: center;
@@ -17,13 +17,24 @@
     }
 
     .container {
-      width: 150px;
+      width: 300px;
       background-color: rgba(255, 255, 255, 0);
       padding: 0;
       box-sizing: border-box;
+      text-align: center;
     }
 
-   
+    .header {
+      font-family: 'Rock Salt', cursive;
+      font-size: 42px;
+      color: #4B2E13;
+      text-shadow: 1px 1px 0 #e6c298;
+      margin-bottom: 12px;
+      text-align: center;
+      letter-spacing: 2px;
+      line-height: 1.1;
+      filter: contrast(90%) brightness(95%) grayscale(20%);
+    }
 
     .center-area {
       height: 120px;
@@ -38,7 +49,7 @@
       height: 10px;
       color: #4B2E13;
       text-shadow: 2px 2px 2px #e6c298;
-      font-family: 'Special Elite', serif;
+      font-family: 'Rock Salt', cursive;
       margin: 0;
       padding: 0;
       display: flex;
@@ -51,7 +62,7 @@
       font-weight: bold;
       text-align: center;
       text-shadow: 1px 1px 1px #e6c298;
-      margin-top: 4px;
+      margin-top: 100px;
     }
 
     .progress-bar {
@@ -84,13 +95,11 @@
 </head>
 <body>
   <div class="container">
-    <div class="divider"></div>
+    <div class="header">ЗНИЩЕНО</div>
 
     <div class="center-area">
       <div class="count" id="artilleryCount">0</div>
     </div>
-
-    <div class="divider"></div>
 
     <div class="footer">
       Боїв: <span id="battleCount">0</span> з <span id="battleGoal">10</span>
