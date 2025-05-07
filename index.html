@@ -17,42 +17,61 @@
     }
 
     .container {
-      width: 300px;
-      height: 400px;
-      background-color: rgba(255, 255, 255, 0.0);
-      padding: 10px;
+      width: 150px;
+      background-color: rgba(255, 255, 255, 0);
+      padding: 0;
       box-sizing: border-box;
     }
 
     .divider {
       border-top: 2px solid #8B3E1F;
-      margin: 10px 0;
+      margin: 4px 0;
     }
 
     .center-area {
-      height: 180px;
+      height: 120px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .count {
-      font-size: 140px;
-      line-height: 1;
+      font-size: 100px;
+      line-height: 0.85;
+      height: 10px;
       color: #4B2E13;
       text-shadow: 2px 2px 2px #e6c298;
       font-family: 'Special Elite', serif;
-      max-width: 100%;
-      max-height: 100%;
-      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .footer {
       font-size: 18px;
       font-weight: bold;
       text-align: center;
-      margin-top: 10px;
       text-shadow: 1px 1px 1px #e6c298;
+      margin-top: 4px;
+    }
+
+    .progress-bar {
+      width: 80%;
+      height: 14px;
+      background-color: #f5e4c4;
+      border: 2px solid #8B3E1F;
+      border-radius: 7px;
+      margin: 6px auto 0 auto;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background-color: #4B2E13;
+      transition: width 0.5s ease-in-out;
     }
 
     .animated {
@@ -79,6 +98,10 @@
     <div class="footer">
       Боїв: <span id="battleCount">0</span> з <span id="battleGoal">10</span>
     </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
   </div>
 
   <script>
@@ -94,8 +117,12 @@
         const data = await response.json();
         if (data.length > 0) {
           const row = data[0];
-          animateUpdate('artilleryCount', row['Сума арт'] || '0');
-          updateBattleText(row['К-ть боїв'] || '0');
+          const artillery = row['Сума арт'] || '0';
+          const battles = row['К-ть боїв'] || '0';
+
+          animateUpdate('artilleryCount', artillery);
+          updateBattleText(battles);
+          updateProgressBar(battles);
         }
       } catch (error) {
         console.error('Помилка при завантаженні даних:', error);
@@ -114,6 +141,11 @@
     function updateBattleText(battles) {
       document.getElementById('battleCount').textContent = battles;
       document.getElementById('battleGoal').textContent = maxBattles;
+    }
+
+    function updateProgressBar(battles) {
+      const percent = Math.min(100, (parseInt(battles) / maxBattles) * 100);
+      document.getElementById('progressFill').style.width = percent + '%';
     }
 
     fetchStats();
