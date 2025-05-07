@@ -1,234 +1,117 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Донат-таймер</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
+  <meta charset="UTF-8" />
+  <title>WANTED ARTY</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: 'BigNoodleTitlingCyr';
-      src: url('https://raw.githubusercontent.com/SaxonUA/fonts/main/BigNoodleTitlingCyr.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-
     body {
+      margin: 0;
       background: transparent;
-      font-family: 'Orbitron', sans-serif;
-      color: orange;
-      text-align: center;
-      padding: 20px;
+      font-family: 'Special Elite', serif;
+      color: #3b2b1a; /* темно-коричневий */
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-    .clock { 
-      display: inline-block;
-      margin-top: 10px;
+
+    .container {
+      width: 300px;
+      background-color: rgba(255, 255, 255, 0); /* повністю прозорий фон */
+      text-align: center;
     }
-    .timer-container {
-      padding: 4px;
-      border-radius: 15px;
-    }
-    .wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-    .spacer {
-      height: 50px;
-      width: 100%;
-    }
+
     .title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 48px;
-      color: orange;
-      text-shadow: 0 0 10px rgba(255, 140, 0, 0.8);
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.2;
       margin-bottom: 10px;
     }
-    .subtitle {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 36px;
-      color: orange;
-      text-shadow: 0 0 8px rgba(255, 140, 0, 0.8);
+
+    .divider {
+      border-top: 2px solid #a0522d; /* saddle brown */
+      margin: 10px 0;
     }
-    .alert-red {
-      animation: blink-red 1s infinite;
-    }
-    @keyframes blink-red {
-      0%, 100% { background-color: rgba(255, 0, 0, 0.5); }
-      50% { background-color: transparent; }
-    }
-    .blink-green {
-      animation: blink-green 1s 1;
-    }
-    @keyframes blink-green {
-      0%, 100% { background-color: rgba(64, 224, 208, 0.5); }
-      50% { background-color: transparent; }
-    }
-    .flip-clock-wrapper .flip-clock-label {
-      visibility: hidden;
-    }
-    .flip-clock-dot {
-      background: white !important;
-      box-shadow: none !important;
-    }
-    .gradient-text {
-      font-family: 'BigNoodleTitlingCyr', sans-serif;
-      font-size: 48px;
+
+    .count {
+      font-size: 100px;
       font-weight: bold;
-      background: linear-gradient(90deg, DarkOrange, black, orange);
-      background-size: 200% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientShift 10s linear infinite;
-      margin-top: 20px;
-     
-     
+      text-shadow: 2px 2px 0 #d2b48c; /* як на пергаменті */
+      transition: transform 0.3s ease;
     }
-   @keyframes gradientShift {
-      0% { background-position: 0% 0%; }
-      100% { background-position: -200% 0%; }
+
+    .footer {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .animated {
+      animation: pop 0.4s ease-in-out;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="title"></div>
-    <div class="timer-container">
-      <div class="clock" id="timer"></div>
+  <div class="container">
+    <div class="title">
+      К-ть<br>знищеної<br>артилерії
     </div>
 
-    <div class="spacer"></div>
-    <div class="spacer"></div>
-    <div class="subtitle"></div>
+    <div class="divider"></div>
 
-    <div class="timer-container">
-      <div class="clock" id="stopwatch"></div>
+    <div class="count" id="artilleryCount">0</div>
+
+    <div class="divider"></div>
+
+    <div class="footer">
+      Боїв: <span id="battleCount">0</span> з <span id="battleGoal">10</span>
     </div>
-
-    <div class="gradient-text">https://donatello.to/SaXon_UA</div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
   <script>
-    let clock;
-    let lastDonationSum = 0;
-    const STREAM_START_TIME = new Date("2025-04-25T20:30:00+03:00");
+    const maxBattles = 10;
 
-    async function fetchDonationSum() {
+    async function fetchStats() {
       const sheetId = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
-      const sheetName = 'BS';
-      const cell = 'A1';
-      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&range=${cell}`;
+      const sheetName = 'arta_sum';
+      const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
 
       try {
         const response = await fetch(url);
-        const text = await response.text();
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        const donationSum = parseFloat(json.table.rows[0].c[0].v);
-
-        if (donationSum > lastDonationSum) {
-          $('.timer-container:first').addClass('blink-green');
-          setTimeout(() => $('.timer-container:first').removeClass('blink-green'), 1000);
+        const data = await response.json();
+        if (data.length > 0) {
+          const row = data[0];
+          animateUpdate('artilleryCount', row['Сума арт'] || '0');
+          updateBattleText(row['К-ть боїв'] || '0');
         }
-        lastDonationSum = donationSum;
-        return donationSum;
       } catch (error) {
-        console.error('Error fetching donation sum:', error);
-        return lastDonationSum;
+        console.error('Помилка при завантаженні даних:', error);
       }
     }
 
-    function calculateStreamEnd(donationSum) {
-      const baseDuration = 2 * 60 * 60;
-      const extraSeconds = donationSum * 12;
-      return new Date(STREAM_START_TIME.getTime() + (baseDuration + extraSeconds) * 1000);
-    }
-
-    async function calculateRemainingSeconds() {
-      const donationSum = await fetchDonationSum();
-      const now = new Date();
-      const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
-      const streamEnd = calculateStreamEnd(donationSum);
-      const remainingSeconds = Math.floor((streamEnd - kyivNow) / 1000);
-      return { remainingSeconds: remainingSeconds > 0 ? remainingSeconds : 1 };
-    }
-
-    async function smoothSetTime(newTime) {
-      const currentTime = clock.getTime().time;
-      const diff = newTime - currentTime;
-
-      if (diff === 0) return;
-
-      const absDiff = Math.abs(diff);
-      const delay = 5;
-
-      const totalAnimationMs = absDiff * delay;
-      const compensationSeconds = Math.floor(totalAnimationMs / 1000 * 1.15);
-
-      const adjustedTime = newTime - compensationSeconds;
-      const step = diff > 0 ? 1 : -1;
-
-      for (let i = currentTime + step; i !== adjustedTime + step; i += step) {
-        clock.setTime(i);
-        await new Promise(r => setTimeout(r, delay));
+    function animateUpdate(id, newValue) {
+      const el = document.getElementById(id);
+      if (el.textContent !== newValue) {
+        el.textContent = newValue;
+        el.classList.add('animated');
+        setTimeout(() => el.classList.remove('animated'), 400);
       }
     }
 
-    async function initClock() {
-      const { remainingSeconds } = await calculateRemainingSeconds();
-      clock = $('#timer').FlipClock(remainingSeconds, {
-        clockFace: 'DailyCounter',
-        countdown: true,
-        autoStart: true
-      });
+    function updateBattleText(battles) {
+      document.getElementById('battleCount').textContent = battles;
+      document.getElementById('battleGoal').textContent = maxBattles;
     }
 
-    async function updateClockTime() {
-      const { remainingSeconds } = await calculateRemainingSeconds();
-
-      if (remainingSeconds <= 300) {
-        $('.timer-container:first').addClass('alert-red');
-      } else {
-        $('.timer-container:first').removeClass('alert-red');
-      }
-
-      if (remainingSeconds !== clock.getTime().time) {
-        await smoothSetTime(remainingSeconds);
-      }
-    }
-
-    $(document).ready(function() {
-      initClock();
-      setInterval(updateClockTime, 15000);
-    });
-  </script>
-  <script>
-    let stopwatch;
-
-    function calculateElapsedSeconds() {
-      const now = new Date();
-      const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
-      const elapsedSeconds = Math.floor((kyivNow - STREAM_START_TIME) / 1000);
-      return elapsedSeconds > 0 ? elapsedSeconds : 0;
-    }
-
-    function initStopwatch() {
-      const elapsedSeconds = calculateElapsedSeconds();
-      stopwatch = $('#stopwatch').FlipClock(elapsedSeconds, {
-        clockFace: 'DailyCounter',
-        countdown: false,
-        autoStart: true
-      });
-    }
-
-    $(document).ready(function() {
-      initStopwatch();
-    });
+    fetchStats();
+    setInterval(fetchStats, 15000);
   </script>
 </body>
 </html>
