@@ -1,161 +1,256 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <title>WANTED COUNT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Колесо фортуни WoT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
-      background-color: transparent;
-      font-family: 'Rock Salt', cursive;
-      color: #4B2E13;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .container {
-      width: 300px;
-      background-color: rgba(255, 255, 255, 0);
-      padding: 0;
-      box-sizing: border-box;
+      background: #111;
+      color: #fff;
+      font-family: sans-serif;
       text-align: center;
     }
-
-    .header {
-      font-family: 'Rock Salt', cursive;
-      font-size: 42px;
-      color: #4B2E13;
-      text-shadow: 1px 1px 0 #e6c298;
-      margin-bottom: 12px;
-      text-align: center;
-      letter-spacing: 2px;
-      line-height: 1.1;
-      filter: contrast(90%) brightness(95%) grayscale(20%);
+    h1 {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 8px;
     }
-
-    .center-area {
-      height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    canvas {
+      background: #222;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #444;
     }
-
-    .count {
-      font-size: 100px;
-      line-height: 0.85;
-      height: 10px;
-      color: #4B2E13;
-      text-shadow: 2px 2px 2px #e6c298;
-      font-family: 'Rock Salt', cursive;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .wheel-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-top: 10px;
     }
-
-    .footer {
-      font-size: 18px;
+    .arrow {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 35px solid red;
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%) rotate(180deg);
+      z-index: 10;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 25px;
+      font-size: 16px;
+      background: linear-gradient(145deg, #ff6600, #1a1a1a);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: all 0.2s ease-in-out;
+    }
+    button:hover {
+      background: linear-gradient(145deg, #ff8800, #2a2a2a);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.35);
+    }
+    .result {
+      margin-top: 10px;
+      font-size: 22px;
       font-weight: bold;
-      text-align: center;
-      text-shadow: 1px 1px 1px #e6c298;
-      margin-top: 100px;
+      color: #ff9900;
     }
-
-    .progress-bar {
-      width: 80%;
-      height: 14px;
-      background-color: #f5e4c4;
-      border: 2px solid #8B3E1F;
-      border-radius: 7px;
-      margin: 6px auto 0 auto;
-      overflow: hidden;
+    .wheel-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 50px;
+      margin-top: 30px;
     }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background-color: #4B2E13;
-      transition: width 0.5s ease-in-out;
+    #battle-task {
+      margin-top: 30px;
+      padding: 15px;
+      border-radius: 10px;
+      background:
+        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+        repeating-linear-gradient(
+          135deg,
+          rgba(255,255,255,0.1),
+          rgba(255,255,255,0.1) 10px,
+          rgba(255,255,255,0.2) 10px,
+          rgba(255,255,255,0.2) 20px
+        );
+      border: 2px solid #ff6600;
+      color: #fff;
+      max-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
     }
-
-    .animated {
-      animation: pop 0.4s ease-in-out;
+    #battle-task h2 {
+      color: #ff6600;
+      margin: 5px 0 10px;
+      font-size: 28px;
+      font-weight: 900;
+      font-family: 'Orbitron', sans-serif;
     }
-
-    @keyframes pop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
+    #battle-task .task-mission {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      font-family: 'Courier New', monospace;
+      margin: 10px 0;
+    }
+    #battle-task .task-label {
+      font-size: 16px;
+      color: #bbbbbb;
+      margin-top: 10px;
+    }
+    #battle-task .task-tank {
+      font-size: 30px;
+      font-weight: bold;
+      color: #ffffff;
+      font-family: 'Courier New', monospace;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">ЗНИЩЕНО</div>
-
-    <div class="center-area">
-      <div class="count" id="artilleryCount">0</div>
+  <h1>🎯 Колесо фортуни від МАРКА 🎯</h1>
+  <div class="wheel-container">
+    <div>
+      <div class="wheel-wrapper">
+        <div class="arrow"></div>
+        <canvas id="tankWheel" width="300" height="300"></canvas>
+      </div>
+      <div class="result" id="tankResult">...</div>
+      <button onclick="spin('tank')">Крутити танк</button>
     </div>
-
-    <div class="footer">
-      Боїв: <span id="battleCount">0</span> з <span id="battleGoal">10</span>
-    </div>
-
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
+    <div>
+      <div class="wheel-wrapper">
+        <div class="arrow"></div>
+        <canvas id="missionWheel" width="300" height="300"></canvas>
+      </div>
+      <div class="result" id="missionResult">...</div>
+      <button onclick="spin('mission')">Крутити завдання</button>
     </div>
   </div>
 
+  <div id="battle-task">
+    <h2>Завдання на бій</h2>
+    <div class="task-mission" id="taskMission">...</div>
+    <div class="task-label">на танку:</div>
+    <div class="task-tank" id="taskTank">...</div>
+  </div>
+
   <script>
-    const maxBattles = 10;
+    const tanks = [
+      "Elc even 90", "T110е5", "Мaus", "T92 арта", "Bourrasque", "Somua SM", "AMX 50B", "AE Phase 1", "EBR 105",
+      "FV 4005", "КВ-2", "Grille 15", "Черчіль III", "T95/FV4201 Chieftain", "E25", "Об’єкт 279 ранній", "T34-85", "Рембо",
+      "T110E3", "Pz.II G", "ЙС-6", "Bat.-Châtillon 25 t", "ЙС-2", "E100", "Chaffe Camo", "BZ-176", "КВ-5",
+      "ТОRО", "КВ-220", "К-91", "ЙС-7", "ГРОМ", "Мантікора", "Concept 1B", "МС-1", "VK 72.01",
+      "ЙСУ-152к", "AMX 50 Foch B", "Cobra", "СУ-2-122", "ОБ 277", "DZT-159", "Т-832", "King Tiger",
+      "121b", "Bisonte", "E77", "Jagdpanzer E 100", "БZ-75", "Vz. 68 Squall"
+    ];
 
-    async function fetchStats() {
-      const sheetId = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
-      const sheetName = 'arta_sum';
-      const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
+    const missions = [
+      "Знищити 3 ворожі танки",
+      "Нанести 4 000+ шкоди",
+      "Вижити до кінця бою",
+      "Знищити артилерію",
+      "2 фраги без отримання шкоди",
+      "Медаль Основний калібр",
+      "Знищити танк на 2 рівні вище",
+      "Захистити танк який вкажуть у чаті",
+      "Медаль Воїн",
+      "Знищити 2 ПТ-САУ",
+      "Самознищитись за 2хв",
+      "Медаль Підтримка",
+      "2 фраги за 2хв",
+      "Насвітити 4к+",
+      "Зробити 1 фраг останнім снарядом",
+      "Зробити підпал в бою",
+      "Зробити 6к+ суми (світло+дамаг)",
+      "Втопитись за 1хв бою",
+      "Нанести 6 000+ шкоди",
+      "Знищити 1 ЛТ"
+    ];
 
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data.length > 0) {
-          const row = data[0];
-          const artillery = row['Сума арт'] || '0';
-          const battles = row['К-ть боїв'] || '0';
+    let spinning = false;
+    let currentAngle = { tank: 0, mission: 0 };
 
-          animateUpdate('artilleryCount', artillery);
-          updateBattleText(battles);
-          updateProgressBar(battles);
+    function drawWheel(canvasId, items, angleOffset = 0, highlightIndex = -1) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext("2d");
+      const radius = canvas.width / 2;
+      const centerX = radius;
+      const centerY = radius;
+      const total = items.length;
+      const angleStep = (2 * Math.PI) / total;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < total; i++) {
+        const angle = i * angleStep + angleOffset;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, angle, angle + angleStep);
+        ctx.fillStyle = (i === highlightIndex) ? "#ffa600" : (i % 2 === 0 ? "#ff6600" : "#1a1a1a");
+        ctx.fill();
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle + angleStep / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "white";
+        ctx.font = "10px sans-serif";
+        ctx.fillText(items[i].slice(0, 22), radius - 10, 4);
+        ctx.restore();
+      }
+    }
+
+    function spin(type) {
+      if (spinning) return;
+      spinning = true;
+
+      const canvasId = type === 'tank' ? 'tankWheel' : 'missionWheel';
+      const resultId = type === 'tank' ? 'tankResult' : 'missionResult';
+      const items = type === 'tank' ? tanks : missions;
+      let angle = currentAngle[type];
+      let velocity = Math.random() * 0.3 + 0.6;
+      const deceleration = 0.002 + Math.random() * 0.003;
+      let lastIndex = -1;
+
+      const interval = setInterval(() => {
+        angle += velocity;
+        velocity *= 0.982;
+
+        const index = Math.floor(((3 * Math.PI / 2 - (angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI) * items.length) % items.length;
+
+        if (index !== lastIndex) lastIndex = index;
+
+        drawWheel(canvasId, items, angle, index);
+
+        if (velocity < deceleration) {
+          clearInterval(interval);
+          currentAngle[type] = angle % (2 * Math.PI);
+          const selected = items[index];
+          document.getElementById(resultId).textContent = selected;
+
+          const tank = document.getElementById('tankResult').textContent;
+          const mission = document.getElementById('missionResult').textContent;
+          if (tank !== '...' && mission !== '...') {
+            document.getElementById('taskTank').textContent = tank;
+            document.getElementById('taskMission').textContent = mission;
+          }
+          spinning = false;
         }
-      } catch (error) {
-        console.error('Помилка при завантаженні даних:', error);
-      }
+      }, 20);
     }
 
-    function animateUpdate(id, newValue) {
-      const el = document.getElementById(id);
-      if (el.textContent !== newValue) {
-        el.textContent = newValue;
-        el.classList.add('animated');
-        setTimeout(() => el.classList.remove('animated'), 400);
-      }
-    }
-
-    function updateBattleText(battles) {
-      document.getElementById('battleCount').textContent = battles;
-      document.getElementById('battleGoal').textContent = maxBattles;
-    }
-
-    function updateProgressBar(battles) {
-      const percent = Math.min(100, (parseInt(battles) / maxBattles) * 100);
-      document.getElementById('progressFill').style.width = percent + '%';
-    }
-
-    fetchStats();
-    setInterval(fetchStats, 10000);
+    window.onload = () => {
+      drawWheel("tankWheel", tanks);
+      drawWheel("missionWheel", missions);
+    };
   </script>
 </body>
 </html>
