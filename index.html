@@ -43,29 +43,22 @@
     }
 
     .flip-damage .flip-clock-wrapper {
-      background: rgba(0, 0, 0, .5);
+      background: rgba(0, 0, 0, 0.5);
       border: 2px solid orange;
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(255, 140, 0, .6);
       display: inline-block;
+      transition: box-shadow 0.3s, border-color 0.3s;
     }
 
     .flip-damage.increase .flip-clock-wrapper {
-      animation: glow-green 1.5s ease;
+      border-color: lime;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.9);
     }
 
     .flip-damage.decrease .flip-clock-wrapper {
-      animation: glow-red 1.5s ease;
-    }
-
-    @keyframes glow-green {
-      0% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.9); border-color: lime; }
-      100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.6); border-color: orange; }
-    }
-
-    @keyframes glow-red {
-      0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); border-color: red; }
-      100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.6); border-color: orange; }
+      border-color: red;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.9);
     }
 
     .note {
@@ -120,8 +113,8 @@
     </div>
 
     <div class="note note-gradient">+250 урону за 1 лайк YouTube</div>
-    <div class="note note-gradient">+1 урон за 1 тап в TikTok</div>
-    <div class="note note-gradient">+20 урону за 1 грн</div>
+    <div class="note note-gradient">+1 урон за 1 "тап" в TikTok</div>
+    <div class="note note-gradient">+25 урону за 1 грн</div>
 
     <div class="countdown-wrapper">
       <div class="flip-clock-wrapper">
@@ -162,16 +155,34 @@
       let currentDamage = 0;
       let animationInterval = null;
       let animationInProgress = false;
+      let pendingDamage = null;
 
       async function animateDamage(newValue) {
-        if (animationInProgress) clearInterval(animationInterval);
-        if (currentDamage === newValue) return;
-
-        const step = newValue > currentDamage ? 1 : -1;
         const container = document.querySelector('.flip-damage');
 
-        container.classList.toggle('increase', step > 0);
-        container.classList.toggle('decrease', step < 0);
+        if (animationInProgress) {
+          pendingDamage = newValue;
+          return;
+        }
+
+        if (newValue === currentDamage) {
+          container.classList.remove('increase', 'decrease');
+          return;
+        }
+
+        const step = newValue > currentDamage ? 1 : -1;
+        const totalSteps = Math.abs(newValue - currentDamage);
+        const maxDuration = 1000;
+        const minDelay = 5;
+        const delay = Math.max(minDelay, maxDuration / totalSteps); // Чим більша різниця — тим швидше
+
+        if (step > 0) {
+          container.classList.remove('decrease');
+          container.classList.add('increase');
+        } else {
+          container.classList.remove('increase');
+          container.classList.add('decrease');
+        }
 
         animationInProgress = true;
         animationInterval = setInterval(() => {
@@ -180,9 +191,14 @@
           if (currentDamage === newValue) {
             clearInterval(animationInterval);
             animationInProgress = false;
-            setTimeout(() => container.classList.remove('increase', 'decrease'), 1500);
+            container.classList.remove('increase', 'decrease');
+            if (pendingDamage !== null && pendingDamage !== currentDamage) {
+              const next = pendingDamage;
+              pendingDamage = null;
+              animateDamage(next);
+            }
           }
-        }, 5);
+        }, delay);
       }
 
       async function updateDamage() {
