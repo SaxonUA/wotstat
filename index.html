@@ -1,256 +1,212 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Колесо фортуни WoT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Рембо Челендж</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      background: #111;
+      background: url('РЕМБО САКСОН (1).png') no-repeat center/cover;
+      font-family: 'Arial Black', sans-serif;
       color: #fff;
-      font-family: sans-serif;
       text-align: center;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    h1 {
-      margin-top: 20px;
+
+    .overlay {
+      padding: 25px 50px;
+      margin: auto;
+      background: transparent;
+      border-radius: 30px;
+      width: fit-content;
+    }
+
+    .damage-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    .label {
+      font-size: 40px;
+      color: orange;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 140, 0, .8);
+      margin: 0;
+    }
+
+    .flip-damage .flip-clock-wrapper {
+      background: rgba(0, 0, 0, .5);
+      border: 2px solid orange;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 140, 0, .6);
       display: inline-block;
-      padding: 10px 20px;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 8px;
     }
-    canvas {
-      background: #222;
-      border-radius: 50%;
-      box-shadow: 0 0 15px #444;
+
+    .flip-damage.increase .flip-clock-wrapper {
+      animation: glow-green 1.5s ease;
     }
-    .wheel-wrapper {
-      position: relative;
-      display: inline-block;
-      margin-top: 10px;
+
+    .flip-damage.decrease .flip-clock-wrapper {
+      animation: glow-red 1.5s ease;
     }
-    .arrow {
-      width: 0;
-      height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 35px solid red;
-      position: absolute;
-      top: -40px;
-      left: 50%;
-      transform: translateX(-50%) rotate(180deg);
-      z-index: 10;
+
+    @keyframes glow-green {
+      0% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.9); border-color: lime; }
+      100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.6); border-color: orange; }
     }
-    button {
-      margin-top: 20px;
-      padding: 10px 25px;
-      font-size: 16px;
-      background: linear-gradient(145deg, #ff6600, #1a1a1a);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      transition: all 0.2s ease-in-out;
+
+    @keyframes glow-red {
+      0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); border-color: red; }
+      100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.6); border-color: orange; }
     }
-    button:hover {
-      background: linear-gradient(145deg, #ff8800, #2a2a2a);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.35);
-    }
-    .result {
-      margin-top: 10px;
-      font-size: 22px;
+
+    .note {
+      font-size: 25px;
       font-weight: bold;
-      color: #ff9900;
+      margin: 5px 0;
     }
-    .wheel-container {
+
+    .note-gradient {
+      background: linear-gradient(270deg, orange, white);
+      background-size: 400% 50%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: grad 6s ease infinite;
+    }
+
+    @keyframes grad {
+      0% { background-position: 0 50% }
+      50% { background-position: 100% 50% }
+      100% { background-position: 0 50% }
+    }
+
+    .flip-clock-wrapper ul li a div div.inn {
+      font-size: 70px;
+    }
+
+    .countdown-wrapper {
+      margin-top: 60px;
+    }
+
+    .rembo-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 45px;
+      color: orange;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 140, 0, .8);
+    }
+
+    #damage-clock {
       display: flex;
       justify-content: center;
-      flex-wrap: wrap;
-      gap: 50px;
-      margin-top: 30px;
-    }
-    #battle-task {
-      margin-top: 30px;
-      padding: 15px;
-      border-radius: 10px;
-      background:
-        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-        repeating-linear-gradient(
-          135deg,
-          rgba(255,255,255,0.1),
-          rgba(255,255,255,0.1) 10px,
-          rgba(255,255,255,0.2) 10px,
-          rgba(255,255,255,0.2) 20px
-        );
-      border: 2px solid #ff6600;
-      color: #fff;
-      max-width: 320px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    #battle-task h2 {
-      color: #ff6600;
-      margin: 5px 0 10px;
-      font-size: 28px;
-      font-weight: 900;
-      font-family: 'Orbitron', sans-serif;
-    }
-    #battle-task .task-mission {
-      font-size: 22px;
-      font-weight: 700;
-      color: #ffffff;
-      font-family: 'Courier New', monospace;
-      margin: 10px 0;
-    }
-    #battle-task .task-label {
-      font-size: 16px;
-      color: #bbbbbb;
-      margin-top: 10px;
-    }
-    #battle-task .task-tank {
-      font-size: 30px;
-      font-weight: bold;
-      color: #ffffff;
-      font-family: 'Courier New', monospace;
     }
   </style>
 </head>
 <body>
-  <h1>🎯 Колесо фортуни від МАРКА 🎯</h1>
-  <div class="wheel-container">
-    <div>
-      <div class="wheel-wrapper">
-        <div class="arrow"></div>
-        <canvas id="tankWheel" width="300" height="300"></canvas>
-      </div>
-      <div class="result" id="tankResult">...</div>
-      <button onclick="spin('tank')">Крутити танк</button>
+  <div class="overlay">
+    <div class="damage-block">
+      <div class="label">ЗАЛИШИЛОСЬ</div>
+      <div class="label">НАСТРІЛЯТИ:</div>
+      <div class="flip-damage"><div id="damage-clock"></div></div>
     </div>
-    <div>
-      <div class="wheel-wrapper">
-        <div class="arrow"></div>
-        <canvas id="missionWheel" width="300" height="300"></canvas>
+
+    <div class="note note-gradient">+200 урону за 1 лайк YouTube</div>
+    <div class="note note-gradient">+1 урон за 2 "тапи" в TikTok</div>
+    <div class="note note-gradient">+25 урону за 1 грн</div>
+
+    <div class="countdown-wrapper">
+      <div class="flip-clock-wrapper">
+        <div class="rembo-title">До кінця челенджу</div>
+        <div class="rembo-title">залишилось:</div>
+        <div id="flip-clock"></div>
       </div>
-      <div class="result" id="missionResult">...</div>
-      <button onclick="spin('mission')">Крутити завдання</button>
     </div>
   </div>
 
-  <div id="battle-task">
-    <h2>Завдання на бій</h2>
-    <div class="task-mission" id="taskMission">...</div>
-    <div class="task-label">на танку:</div>
-    <div class="task-tank" id="taskTank">...</div>
-  </div>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
   <script>
-    const tanks = [
-      "Elc even 90", "T110е5", "Мaus", "T92 арта", "Bourrasque", "Somua SM", "AMX 50B", "AE Phase 1", "EBR 105",
-      "FV 4005", "КВ-2", "Grille 15", "Черчіль III", "T95/FV4201 Chieftain", "E25", "Об’єкт 279 ранній", "T34-85", "Рембо",
-      "T110E3", "Pz.II G", "ЙС-6", "Bat.-Châtillon 25 t", "ЙС-2", "E100", "Chaffe Camo", "BZ-176", "КВ-5",
-      "ТОRО", "КВ-220", "К-91", "ЙС-7", "ГРОМ", "Мантікора", "Concept 1B", "МС-1", "VK 72.01",
-      "ЙСУ-152к", "AMX 50 Foch B", "Cobra", "СУ-2-122", "ОБ 277", "DZT-159", "Т-832", "King Tiger",
-      "121b", "Bisonte", "E77", "Jagdpanzer E 100", "БZ-75", "Vz. 68 Squall"
-    ];
+    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
+    const GID = "1630188258";
 
-    const missions = [
-      "Знищити 3 ворожі танки",
-      "Нанести 4 000+ шкоди",
-      "Вижити до кінця бою",
-      "Знищити артилерію",
-      "2 фраги без отримання шкоди",
-      "Медаль Основний калібр",
-      "Знищити танк на 2 рівні вище",
-      "Захистити танк який вкажуть у чаті",
-      "Медаль Воїн",
-      "Знищити 2 ПТ-САУ",
-      "Самознищитись за 2хв",
-      "Медаль Підтримка",
-      "2 фраги за 2хв",
-      "Насвітити 4к+",
-      "Зробити 1 фраг останнім снарядом",
-      "Зробити підпал в бою",
-      "Зробити 6к+ суми (світло+дамаг)",
-      "Втопитись за 1хв бою",
-      "Нанести 6 000+ шкоди",
-      "Знищити 1 ЛТ"
-    ];
-
-    let spinning = false;
-    let currentAngle = { tank: 0, mission: 0 };
-
-    function drawWheel(canvasId, items, angleOffset = 0, highlightIndex = -1) {
-      const canvas = document.getElementById(canvasId);
-      const ctx = canvas.getContext("2d");
-      const radius = canvas.width / 2;
-      const centerX = radius;
-      const centerY = radius;
-      const total = items.length;
-      const angleStep = (2 * Math.PI) / total;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < total; i++) {
-        const angle = i * angleStep + angleOffset;
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, angle, angle + angleStep);
-        ctx.fillStyle = (i === highlightIndex) ? "#ffa600" : (i % 2 === 0 ? "#ff6600" : "#1a1a1a");
-        ctx.fill();
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate(angle + angleStep / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "white";
-        ctx.font = "10px sans-serif";
-        ctx.fillText(items[i].slice(0, 22), radius - 10, 4);
-        ctx.restore();
-      }
+    async function fetchSingleCell(range) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&range=${range}&tqx=out:json`;
+      const res = await fetch(url);
+      const txt = await res.text();
+      const json = JSON.parse(txt.substring(47).slice(0, -2));
+      return json.table.rows[0].c[0]?.v || 0;
     }
 
-    function spin(type) {
-      if (spinning) return;
-      spinning = true;
+    $(async function () {
+      const flipClock = $('#flip-clock').FlipClock(getTimeLeftKyiv(), {
+        clockFace: 'HourlyCounter', countdown: true, autoStart: true
+      });
+      $('.flip-clock-divider.hours .flip-clock-label').text('Години');
+      $('.flip-clock-divider.minutes .flip-clock-label').text('Хвилини');
+      $('.flip-clock-divider.seconds .flip-clock-label').text('Секунди');
 
-      const canvasId = type === 'tank' ? 'tankWheel' : 'missionWheel';
-      const resultId = type === 'tank' ? 'tankResult' : 'missionResult';
-      const items = type === 'tank' ? tanks : missions;
-      let angle = currentAngle[type];
-      let velocity = Math.random() * 0.3 + 0.6;
-      const deceleration = 0.002 + Math.random() * 0.003;
-      let lastIndex = -1;
+      setInterval(() => {
+        flipClock.setTime(getTimeLeftKyiv());
+      }, 60000);
 
-      const interval = setInterval(() => {
-        angle += velocity;
-        velocity *= 0.982;
+      const damageClock = $('#damage-clock').FlipClock(0, { clockFace: 'Counter', autoStart: false });
+      let currentDamage = 0;
+      let animationInterval = null;
+      let animationInProgress = false;
 
-        const index = Math.floor(((3 * Math.PI / 2 - (angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI) * items.length) % items.length;
+      async function animateDamage(newValue) {
+        if (animationInProgress) clearInterval(animationInterval);
+        if (currentDamage === newValue) return;
 
-        if (index !== lastIndex) lastIndex = index;
+        const step = newValue > currentDamage ? 1 : -1;
+        const container = document.querySelector('.flip-damage');
 
-        drawWheel(canvasId, items, angle, index);
+        container.classList.toggle('increase', step > 0);
+        container.classList.toggle('decrease', step < 0);
 
-        if (velocity < deceleration) {
-          clearInterval(interval);
-          currentAngle[type] = angle % (2 * Math.PI);
-          const selected = items[index];
-          document.getElementById(resultId).textContent = selected;
-
-          const tank = document.getElementById('tankResult').textContent;
-          const mission = document.getElementById('missionResult').textContent;
-          if (tank !== '...' && mission !== '...') {
-            document.getElementById('taskTank').textContent = tank;
-            document.getElementById('taskMission').textContent = mission;
+        animationInProgress = true;
+        animationInterval = setInterval(() => {
+          currentDamage += step;
+          damageClock.setTime(currentDamage);
+          if (currentDamage === newValue) {
+            clearInterval(animationInterval);
+            animationInProgress = false;
+            setTimeout(() => container.classList.remove('increase', 'decrease'), 1500);
           }
-          spinning = false;
-        }
-      }, 20);
-    }
+        }, 5);
+      }
 
-    window.onload = () => {
-      drawWheel("tankWheel", tanks);
-      drawWheel("missionWheel", missions);
-    };
+      async function updateDamage() {
+        try {
+          let raw = await fetchSingleCell("C14");
+          raw = raw.toString().replace(/\s/g, '');
+          const value = parseInt(raw || 0);
+          animateDamage(value);
+        } catch (e) {
+          console.error("Помилка оновлення дамага:", e);
+        }
+      }
+
+      await updateDamage();
+      setInterval(updateDamage, 15000);
+    });
+
+    function getTimeLeftKyiv() {
+      const now = new Date();
+      const kyiv = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
+      const end = new Date(kyiv);
+      end.setHours(23, 59, 59, 999);
+      return Math.floor((end - kyiv) / 1000);
+    }
   </script>
 </body>
 </html>
