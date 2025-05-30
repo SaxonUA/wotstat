@@ -2,160 +2,211 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
-  <title>WANTED COUNT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet">
+  <title>Рембо Челендж</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
+      background: url('РЕМБО САКСОН (1).png') no-repeat center/cover;
+      font-family: 'Arial Black', sans-serif;
+      color: #fff;
+      text-align: center;
       margin: 0;
-      background-color: transparent;
-      font-family: 'Rock Salt', cursive;
-      color: #4B2E13;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 0;
       height: 100vh;
-    }
-
-    .container {
-      width: 300px;
-      background-color: rgba(255, 255, 255, 0);
-      padding: 0;
-      box-sizing: border-box;
-      text-align: center;
-    }
-
-    .header {
-      font-family: 'Rock Salt', cursive;
-      font-size: 42px;
-      color: #4B2E13;
-      text-shadow: 1px 1px 0 #e6c298;
-      margin-bottom: 12px;
-      text-align: center;
-      letter-spacing: 2px;
-      line-height: 1.1;
-      filter: contrast(90%) brightness(95%) grayscale(20%);
-    }
-
-    .center-area {
-      height: 120px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
     }
 
-    .count {
-      font-size: 100px;
-      line-height: 0.85;
-      height: 10px;
-      color: #4B2E13;
-      text-shadow: 2px 2px 2px #e6c298;
-      font-family: 'Rock Salt', cursive;
+    .overlay {
+      padding: 25px 50px;
+      margin: auto;
+      background: transparent;
+      border-radius: 30px;
+      width: fit-content;
+    }
+
+    .damage-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    .label {
+      font-size: 40px;
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 255, 255, .8);
       margin: 0;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .footer {
-      font-size: 18px;
+    .flip-damage .flip-clock-wrapper {
+      background: rgba(0, 0, 0, .5);
+      border: 2px solid #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, .6);
+      display: inline-block;
+    }
+
+    .flip-damage.increase .flip-clock-wrapper {
+      animation: glow-green 1.5s ease;
+    }
+
+    .flip-damage.decrease .flip-clock-wrapper {
+      animation: glow-red 1.5s ease;
+    }
+
+    @keyframes glow-green {
+      0% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.9); border-color: lime; }
+      100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); border-color: #fff; }
+    }
+
+    @keyframes glow-red {
+      0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); border-color: red; }
+      100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); border-color: #fff; }
+    }
+
+    .note {
+      font-size: 25px;
       font-weight: bold;
-      text-align: center;
-      text-shadow: 1px 1px 1px #e6c298;
-      margin-top: 100px;
+      margin: 5px 0;
     }
 
-    .progress-bar {
-      width: 80%;
-      height: 14px;
-      background-color: #f5e4c4;
-      border: 2px solid #8B3E1F;
-      border-radius: 7px;
-      margin: 6px auto 0 auto;
-      overflow: hidden;
+    .note-gradient {
+      background: linear-gradient(270deg, #fff, white);
+      background-size: 400% 50%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: grad 6s ease infinite;
     }
 
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background-color: #4B2E13;
-      transition: width 0.5s ease-in-out;
+    @keyframes grad {
+      0% { background-position: 0 50% }
+      50% { background-position: 100% 50% }
+      100% { background-position: 0 50% }
     }
 
-    .animated {
-      animation: pop 0.4s ease-in-out;
+    .flip-clock-wrapper ul li a div div.inn {
+      font-size: 70px;
     }
 
-    @keyframes pop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
+    .countdown-wrapper {
+      margin-top: 60px;
+    }
+
+    .rembo-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 45px;
+      color: #fff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 255, 255, .8);
+    }
+
+    #damage-clock {
+      display: flex;
+      justify-content: center;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">ЗНИЩЕНО</div>
-
-    <div class="center-area">
-      <div class="count" id="artilleryCount">0</div>
+  <div class="overlay">
+    <div class="damage-block">
+      <div class="label">ЗАЛИШИЛОСЬ</div>
+      <div class="label">НАСТРІЛЯТИ:</div>
+      <div class="flip-damage"><div id="damage-clock"></div></div>
     </div>
 
-    <div class="footer">
-      Боїв: <span id="battleCount">0</span> з <span id="battleGoal">10</span>
-    </div>
+    <div class="note note-gradient">+200 урону за 1 лайк YouTube</div>
+    <div class="note note-gradient">+1 урон за 2 "тапи" в TikTok</div>
+    <div class="note note-gradient">+25 урону за 1 грн</div>
 
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
+    <div class="countdown-wrapper">
+      <div class="flip-clock-wrapper">
+        <div class="rembo-title">До кінця челенджу</div>
+        <div class="rembo-title">залишилось:</div>
+        <div id="flip-clock"></div>
+      </div>
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
   <script>
-    const maxBattles = 10;
+    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
+    const GID = "1630188258";
 
-    async function fetchStats() {
-      const sheetId = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
-      const sheetName = 'arta_sum';
-      const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
+    async function fetchSingleCell(range) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&range=${range}&tqx=out:json`;
+      const res = await fetch(url);
+      const txt = await res.text();
+      const json = JSON.parse(txt.substring(47).slice(0, -2));
+      return json.table.rows[0].c[0]?.v || 0;
+    }
 
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data.length > 0) {
-          const row = data[0];
-          const artillery = row['Сума арт'] || '0';
-          const battles = row['К-ть боїв'] || '0';
+    $(async function () {
+      const flipClock = $('#flip-clock').FlipClock(getTimeLeftKyiv(), {
+        clockFace: 'HourlyCounter', countdown: true, autoStart: true
+      });
+      $('.flip-clock-divider.hours .flip-clock-label').text('Години');
+      $('.flip-clock-divider.minutes .flip-clock-label').text('Хвилини');
+      $('.flip-clock-divider.seconds .flip-clock-label').text('Секунди');
 
-          animateUpdate('artilleryCount', artillery);
-          updateBattleText(battles);
-          updateProgressBar(battles);
+      setInterval(() => {
+        flipClock.setTime(getTimeLeftKyiv());
+      }, 60000);
+
+      const damageClock = $('#damage-clock').FlipClock(0, { clockFace: 'Counter', autoStart: false });
+      let currentDamage = 0;
+      let animationInterval = null;
+      let animationInProgress = false;
+
+      async function animateDamage(newValue) {
+        if (animationInProgress) clearInterval(animationInterval);
+        if (currentDamage === newValue) return;
+
+        const step = newValue > currentDamage ? 1 : -1;
+        const container = document.querySelector('.flip-damage');
+
+        container.classList.toggle('increase', step > 0);
+        container.classList.toggle('decrease', step < 0);
+
+        animationInProgress = true;
+        animationInterval = setInterval(() => {
+          currentDamage += step;
+          damageClock.setTime(currentDamage);
+          if (currentDamage === newValue) {
+            clearInterval(animationInterval);
+            animationInProgress = false;
+            setTimeout(() => container.classList.remove('increase', 'decrease'), 1500);
+          }
+        }, 5);
+      }
+
+      async function updateDamage() {
+        try {
+          let raw = await fetchSingleCell("C14");
+          raw = raw.toString().replace(/\s/g, '');
+          const value = parseInt(raw || 0);
+          animateDamage(value);
+        } catch (e) {
+          console.error("Помилка оновлення дамага:", e);
         }
-      } catch (error) {
-        console.error('Помилка при завантаженні даних:', error);
       }
-    }
 
-    function animateUpdate(id, newValue) {
-      const el = document.getElementById(id);
-      if (el.textContent !== newValue) {
-        el.textContent = newValue;
-        el.classList.add('animated');
-        setTimeout(() => el.classList.remove('animated'), 400);
-      }
-    }
+      await updateDamage();
+      setInterval(updateDamage, 15000);
+    });
 
-    function updateBattleText(battles) {
-      document.getElementById('battleCount').textContent = battles;
-      document.getElementById('battleGoal').textContent = maxBattles;
+    function getTimeLeftKyiv() {
+      const now = new Date();
+      const kyiv = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
+      const end = new Date(kyiv);
+      end.setHours(23, 59, 59, 999);
+      return Math.floor((end - kyiv) / 1000);
     }
-
-    function updateProgressBar(battles) {
-      const percent = Math.min(100, (parseInt(battles) / maxBattles) * 100);
-      document.getElementById('progressFill').style.width = percent + '%';
-    }
-
-    fetchStats();
-    setInterval(fetchStats, 10000);
   </script>
 </body>
 </html>
