@@ -80,20 +80,31 @@
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
     const SHEET_NAME = "ARTA";
 
+    function formatNumber(value) {
+      return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
     async function loadTable() {
       const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
       const res = await fetch(url);
       const text = await res.text();
-      const rows = text.trim().split("\n").map(row => row.split(","));
+      const rows = text.trim().split("\n").map(row =>
+        row.split(",").map(cell => cell.replace(/^"|"$/g, ""))
+      );
 
       const tbody = document.querySelector("#artaTable tbody");
       tbody.innerHTML = "";
 
       for (let i = 1; i < rows.length; i++) {
         const tr = document.createElement("tr");
-        rows[i].forEach(cell => {
+        rows[i].forEach((cell, index) => {
           const td = document.createElement("td");
-          td.textContent = cell;
+          // Форматуємо лише числові колонки (2–4)
+          if (index > 0) {
+            td.textContent = formatNumber(cell);
+          } else {
+            td.textContent = cell;
+          }
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
