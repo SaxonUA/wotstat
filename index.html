@@ -1,118 +1,230 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>ARTA Overlay</title>
+  <meta charset="UTF-8" />
+  <title>Рембо Челендж</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap');
-
-    html, body {
+    body {
+      background: url('РЕМБО САКСОН (1).png') no-repeat center center;
+      background-size: cover;
+      font-family: 'Arial Black', sans-serif;
+      color: white;
+      text-align: center;
       margin: 0;
       padding: 0;
-      background: transparent;
-      font-family: 'Roboto Mono', monospace;
-      color: #e0e0e0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    .overlay-container {
-      padding: 10px 20px;
-      background-color: rgba(0, 0, 0, 0.6);
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.0);
+      border-radius: 30px;
+      padding: 25px 50px;
+      width: fit-content;
+      margin: 0 auto;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .divider {
+      margin: 20px 0;
+    }
+
+    .line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .label {
+      font-size: 22px;
+      color: orange;
+      text-align: right;
+    }
+
+    .value {
+      font-size: 36px;
+      font-weight: bold;
+      background: repeating-linear-gradient(-45deg, rgba(128,128,128,0.3) 0px, rgba(128,128,128,0.3) 8px, transparent 8px, transparent 16px);
+      border: 2px solid orange;
       border-radius: 10px;
-      max-width: 400px;
+      padding: 10px 20px;
+      min-width: 140px;
+      text-align: left;
     }
 
-    h1 {
-  font-size: 30px;
-  color: #000000;
-  text-align: center;
-  margin: 10px 0 15px;
-  text-shadow: 1px 1px 0 #fff;
-}
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .increase {
+      animation: fadeGreen 0.5s ease;
+    }
+
+    .decrease {
+      animation: fadeRed 0.5s ease;
+    }
+
+    @keyframes fadeGreen {
+      0% { color: lime; opacity: 0; transform: scale(1.1); }
+      50% { color: lime; opacity: 0.5; }
+      100% { color: white; opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeRed {
+      0% { color: red; opacity: 0; transform: scale(1.1); }
+      50% { color: red; opacity: 0.5; }
+      100% { color: white; opacity: 1; transform: scale(1); }
+    }
+
+    .note {
       font-size: 18px;
-      background-color: rgba(30, 30, 30, 0.6);
+      font-weight: bold;
+      margin: 5px 0;
     }
 
-    th, td {
-      padding: 8px 12px;
-      text-align: center;
+    .note-gradient {
+      background: linear-gradient(270deg, orange, white);
+      background-size: 400% 50%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 6s ease infinite;
     }
 
-    th {
-      background-color: rgba(60, 60, 60, 0.5);
-      color: #f0f0f0;
-      font-size: 14px;
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .countdown-wrapper {
+      margin-top: 20px;
+    }
+
+    .flip-clock-wrapper {
+      background-color: rgba(0, 0, 0, 0.0);
+     
+      border-radius: 20px;
+      padding: 20px 30px;
+      
+      display: block;
+      width: fit-content;
+      margin: 0 auto;
+    }
+
+    .flip-clock-wrapper ul {
+      float: left;
+    }
+
+    .flip-clock-wrapper ul li a div div.inn {
+      font-size: 70px;
+    }
+
+    .rembo-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 40px;
+      color: orange;
+      margin-bottom: 10px;
       text-transform: uppercase;
-    }
-
-    tr:nth-child(even) {
-      background-color: rgba(255, 255, 255, 0.03);
-    }
-
-    tr:hover {
-      background-color: rgba(255, 255, 255, 0.08);
-    }
-
-    td {
-      color: #ddd;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7), 0 0 10px rgba(255,140,0,0.8);
+      letter-spacing: 2px;
     }
   </style>
 </head>
 <body>
-  <div class="overlay-container">
-    <h1>НЕвпливав:</h1>
-    <table id="artaTable">
-      <thead>
-        <tr>
-          <th>Танк</th>
-          <th>Бої</th>
-          <th>Урон</th>
-          <th>Фраги</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div class="overlay">
+    <div class="title"> РЕМБО ЧЕЛЕНДЖ </div>
+    <div class="divider"></div>
+    <div class="line">
+      <div class="label">ЗАЛИШИЛОСЬ<br>НАСТРІЛЯТИ:</div>
+      <div class="value" id="left2">...</div>
+    </div>
+    <div class="divider"></div>
+    <div class="note note-gradient">+200 урону за 1 лайк YouTube</div>
+    <div class="note note-gradient">+1 урон за 1 тап в TikTok</div>
+    <div class="note note-gradient">+50 урону за 1 грн</div>
+
+    <div class="countdown-wrapper">
+      <div class="flip-clock-wrapper">
+        <div class="rembo-title">До кінця челенджу</div>
+         <div class="rembo-title">залишилось:</div>
+        <div id="flip-clock"></div>
+      </div>
+    </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const SHEET_NAME = "ARTA";
+    const GID = "1630188258";
 
-    function formatNumber(value) {
-      return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    }
-
-    async function loadTable() {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+    async function fetchSingleCell(range) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&range=${range}&tqx=out:json`;
       const res = await fetch(url);
       const text = await res.text();
-      const rows = text.trim().split("\n").map(row =>
-        row.split(",").map(cell => cell.replace(/^"|"$/g, ""))
-      );
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+      return json.table.rows[0].c[0]?.v || 0;
+    }
 
-      const tbody = document.querySelector("#artaTable tbody");
-      tbody.innerHTML = "";
+    function animateValue(id, newValue) {
+      const el = document.getElementById(id);
+      if (!el) return;
 
-      for (let i = 1; i < rows.length; i++) {
-        const tr = document.createElement("tr");
-        rows[i].forEach((cell, index) => {
-          const td = document.createElement("td");
-          // Форматуємо лише числові колонки (2–4)
-          if (index > 0) {
-            td.textContent = formatNumber(cell);
-          } else {
-            td.textContent = cell;
-          }
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
+      const oldValue = parseInt(el.innerText.replace(/\D/g, "")) || 0;
+      const valueChanged = newValue !== oldValue;
+
+      if (valueChanged) {
+        el.classList.remove("increase", "decrease");
+
+        if (newValue > oldValue) {
+          el.classList.add("increase");
+        } else {
+          el.classList.add("decrease");
+        }
+
+        el.innerText = Number(newValue).toLocaleString();
+        setTimeout(() => el.classList.remove("increase", "decrease"), 500);
       }
     }
 
-    loadTable();
-    setInterval(loadTable, 15000);
+    async function updateUI() {
+      try {
+        const left = await fetchSingleCell("C14");
+        animateValue("left2", left);
+      } catch (err) {
+        console.error("Помилка оновлення даних:", err);
+        const el = document.getElementById("left2");
+        if (el) el.innerText = "Помилка";
+      }
+    }
+
+    function getTimeLeftKyiv() {
+      const now = new Date();
+      const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
+      const end = new Date(kyivNow);
+      end.setHours(21, 59, 59, 999);
+      return Math.floor((end - kyivNow) / 1000);
+    }
+
+    $(document).ready(function() {
+      const flipClock = $('#flip-clock').FlipClock(getTimeLeftKyiv(), {
+        clockFace: 'HourlyCounter',
+        countdown: true,
+        autoStart: true
+      });
+      setInterval(() => {
+        flipClock.setTime(getTimeLeftKyiv());
+      }, 60000);
+    });
+
+    updateUI();
+    setInterval(updateUI, 15000);
   </script>
 </body>
 </html>
