@@ -58,7 +58,7 @@
       const now = new Date();
       const kyivNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
       const end = new Date(kyivNow);
-      end.setHours(23, 59, 59, 999);
+      end.setHours(21, 59, 59, 999);
       return Math.floor((end - kyivNow) / 1000);
     }
 
